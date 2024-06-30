@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const slideOut = (target) => {
     gsap.killTweensOf(target);
-    return gsap.to(target, 
+    return gsap.to(target,
       { opacity: 0, y: '10%', duration: 0.1, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
