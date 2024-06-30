@@ -14,14 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const slideIn = (target) => {
     gsap.killTweensOf(target);
     gsap.fromTo(target, 
-      { opacity: 0, y: '-10%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: 0.04, ease: 'power2.out' });
+      { opacity: 0, y: '-30%', visibility: 'visible' }, 
+      { opacity: 1, y: '0%', duration: 0.1, ease: 'power2.out' });
   };
 
   const slideOut = (target) => {
     gsap.killTweensOf(target);
     return gsap.to(target,
-      { opacity: 0, y: '10%', duration: 0.04, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, y: '30%', duration: 0.1, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
