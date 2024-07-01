@@ -83,10 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Show the first heading and paragraph by default
-  const firstGarmentId = garmentItems[0]?.getAttribute('data-garment-id');
-  if (firstGarmentId) {
+  if (garmentItems.length > 0) {
+    const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
     const defaultHeading = document.querySelector(`.garment_heading[data-garment-id="${firstGarmentId}"]`);
     const defaultParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${firstGarmentId}"]`);
+    console.log("Default Garment ID:", firstGarmentId);  // Debug output
+    console.log("Default Heading:", defaultHeading);    // Debug output
+    console.log("Default Paragraph:", defaultParagraph);  // Debug output
     if (defaultHeading && defaultParagraph) {
       gsap.set(defaultHeading, { opacity: 1, visibility: 'visible' });
       gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible' });
