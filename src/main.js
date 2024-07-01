@@ -1,10 +1,12 @@
+@ -1,158 +1,158 @@
 import './styles/style.css';
 import { gsap } from "gsap";
 
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
   const threadsDuration = 0.2; // Duration of the hide and show animations for threads
-  const garmentsDuration = 0.5; // Duration of the hide and show animations for garments
+  const garmentsDuration = 0.3; // Duration of the hide and show animations for garments
+  const garmentsOverlap = 0.3; // Overlap time for synchronization for garments
   const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
 
   // Script for threads_title-item and threads_trigger-item
@@ -69,10 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Script for h-h6.is-info and paragraph.is-info
+  // Script for garment_heading and garment_paragraph
   const garmentItems = document.querySelectorAll('.garment_item');
-  const headings = document.querySelectorAll('.h-h6.is-info');
-  const paragraphs = document.querySelectorAll('.paragraph.is-info');
+  const headings = document.querySelectorAll('.garment_heading');
+  const paragraphs = document.querySelectorAll('.garment_paragraph');
 
   console.log('garmentItems:', garmentItems);
   console.log('headings:', headings);
@@ -90,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show the first heading and paragraph by default
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
-    const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
+    const defaultHeading = document.querySelector(`.garment_heading[data-garment-id="${firstGarmentId}"]`);
+    const defaultParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${firstGarmentId}"]`);
     console.log("Default Garment ID:", firstGarmentId);  // Debug output
     console.log("Default Heading:", defaultHeading);    // Debug output
     console.log("Default Paragraph:", defaultParagraph);  // Debug output
@@ -138,8 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Show the corresponding heading and paragraph
-      const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
-      const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
+      const targetHeading = document.querySelector(`.garment_heading[data-garment-id="${garmentId}"]`);
+      const targetParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
         tl.add(() => showContent(targetHeading), `-=${garmentsOverlap}`);  // Start showing with overlap
