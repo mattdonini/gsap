@@ -82,6 +82,17 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(paragraph, { opacity: 0, visibility: 'hidden' });
   });
 
+  // Show the first heading and paragraph by default
+  const firstGarmentId = garmentItems[0]?.getAttribute('data-garment-id');
+  if (firstGarmentId) {
+    const defaultHeading = document.querySelector(`.garment_heading[data-garment-id="${firstGarmentId}"]`);
+    const defaultParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${firstGarmentId}"]`);
+    if (defaultHeading && defaultParagraph) {
+      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible' });
+      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible' });
+    }
+  }
+
   const showContent = (target) => {
     gsap.killTweensOf(target);
     gsap.to(target, { opacity: 1, visibility: 'visible', duration: 0.5, ease: 'power2.out' });
