@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Script for garment_heading and garment_paragraph
+  // Script for h-h6.is-info and paragraph.is-info
   const garmentItems = document.querySelectorAll('.garment_item');
-  const headings = document.querySelectorAll('.garment_heading');
-  const paragraphs = document.querySelectorAll('.garment_paragraph');
+  const headings = document.querySelectorAll('.h-h6.is-info');
+  const paragraphs = document.querySelectorAll('.paragraph.is-info');
 
   console.log('garmentItems:', garmentItems);
   console.log('headings:', headings);
@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show the first heading and paragraph by default
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(`.garment_heading[data-garment-id="${firstGarmentId}"]`);
-    const defaultParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${firstGarmentId}"]`);
+    const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
+    const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
     console.log("Default Garment ID:", firstGarmentId);  // Debug output
     console.log("Default Heading:", defaultHeading);    // Debug output
     console.log("Default Paragraph:", defaultParagraph);  // Debug output
@@ -138,8 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Show the corresponding heading and paragraph
-      const targetHeading = document.querySelector(`.garment_heading[data-garment-id="${garmentId}"]`);
-      const targetParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${garmentId}"]`);
+      const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
+      const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
         tl.add(() => showContent(targetHeading), `-=${garmentsOverlap}`);  // Start showing with overlap
