@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
   const threadsDuration = 0.2; // Duration of the hide and show animations for threads
-  const garmentsDuration = 0.8; // Duration of the hide and show animations for garments
+  const garmentsDuration = 0.5; // Duration of the hide and show animations for garments
   const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
 
   // Script for threads_title-item and threads_trigger-item
@@ -35,19 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    const defaultTarget = document.querySelector(.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap);
+    const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       gsap.set(defaultTarget, { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
-      console.error(No matching target found with data-threads-id="${firstTriggerId}");
+      console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
   }
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       const id = trigger.getAttribute('data-threads-id');
-      const target = document.querySelector(.threads_title-item[data-threads-id="${id}"] .title_wrap);
+      const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
 
       if (target) {
         // Create a timeline to sequence the slide out and slide in animations
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Slide in the new target element after the slide out is complete
         tl.add(() => slideIn(target));
       } else {
-        console.error(No matching target found with data-threads-id="${id}");
+        console.error(`No matching target found with data-threads-id="${id}"`);
       }
     });
   });
@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show the first heading and paragraph by default
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(.garment_heading[data-garment-id="${firstGarmentId}"]);
-    const defaultParagraph = document.querySelector(.garment_paragraph[data-garment-id="${firstGarmentId}"]);
+    const defaultHeading = document.querySelector(`.garment_heading[data-garment-id="${firstGarmentId}"]`);
+    const defaultParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${firstGarmentId}"]`);
     console.log("Default Garment ID:", firstGarmentId);  // Debug output
     console.log("Default Heading:", defaultHeading);    // Debug output
     console.log("Default Paragraph:", defaultParagraph);  // Debug output
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
   garmentItems.forEach(item => {
     item.addEventListener('click', () => {
       const garmentId = item.getAttribute('data-garment-id');
-      console.log(Clicked Garment Item with ID: ${garmentId});
+      console.log(`Clicked Garment Item with ID: ${garmentId}`);
 
       // Create a timeline to sequence the hide and show animations
       const tl = gsap.timeline();
@@ -138,19 +138,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Show the corresponding heading and paragraph
-      const targetHeading = document.querySelector(.garment_heading[data-garment-id="${garmentId}"]);
-      const targetParagraph = document.querySelector(.garment_paragraph[data-garment-id="${garmentId}"]);
+      const targetHeading = document.querySelector(`.garment_heading[data-garment-id="${garmentId}"]`);
+      const targetParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
-        tl.add(() => showContent(targetHeading), -=${garmentsOverlap});  // Start showing with overlap
+        tl.add(() => showContent(targetHeading), `-=${garmentsOverlap}`);  // Start showing with overlap
       } else {
-        console.error(No matching heading found with data-garment-id="${garmentId}");
+        console.error(`No matching heading found with data-garment-id="${garmentId}"`);
       }
 
       if (targetParagraph) {
-        tl.add(() => showContent(targetParagraph), -=${garmentsOverlap});  // Start showing with overlap
+        tl.add(() => showContent(targetParagraph), `-=${garmentsOverlap}`);  // Start showing with overlap
       } else {
-        console.error(No matching paragraph found with data-garment-id="${garmentId}");
+        console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
       }
     });
   });
