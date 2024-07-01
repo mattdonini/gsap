@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const hideContent = (target) => {
     gsap.killTweensOf(target);
-    gsap.to(target, 
+    return gsap.to(target, 
       { opacity: 0, y: '100%', duration: 0.5, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
@@ -116,13 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const garmentId = item.getAttribute('data-garment-id');
       console.log(`Clicked Garment Item with ID: ${garmentId}`);
 
+      // Create a timeline to sequence the hide and show animations
+      const tl = gsap.timeline();
+
       // Hide all headings and paragraphs
       headings.forEach(heading => {
-        hideContent(heading);
+        if (heading.style.visibility === 'visible') {
+          tl.add(hideContent(heading));
+        }
       });
 
       paragraphs.forEach(paragraph => {
-        hideContent(paragraph);
+        if (paragraph.style.visibility === 'visible') {
+          tl.add(hideContent(paragraph));
+        }
       });
 
       // Show the corresponding heading and paragraph
@@ -130,13 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
-        showContent(targetHeading);
+        tl.add(() => showContent(targetHeading));
       } else {
         console.error(`No matching heading found with data-garment-id="${garmentId}"`);
       }
 
       if (targetParagraph) {
-        showContent(targetParagraph);
+        tl.add(() => showContent(targetParagraph));
       } else {
         console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
       }
