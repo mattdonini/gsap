@@ -1,9 +1,13 @@
-@ -1,111 +1,111 @@
 import './styles/style.css';
 import { gsap } from "gsap";
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Existing functionality for threads_title-item and threads_trigger-item
+  // Configurable variables for animation timing
+  const threadsDuration = 0.2; // Duration of the hide and show animations for threads
+  const garmentsDuration = 0.5; // Duration of the hide and show animations for garments
+  const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
+
+  // Script for threads_title-item and threads_trigger-item
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
@@ -17,13 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf(target);
     gsap.fromTo(target, 
       { opacity: 0, y: '-30%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: 0.2, ease: 'power2.out' });
+      { opacity: 1, y: '0%', duration: threadsDuration, ease: 'power2.out' });
   };
 
   const slideOut = (target) => {
     gsap.killTweensOf(target);
     return gsap.to(target,
-      { opacity: 0, y: '30%', duration: 0.2, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, y: '30%', duration: threadsDuration, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
@@ -65,10 +69,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // New functionality for garment_heading and garment_paragraph based on garment_item clicks
+  // Script for h-h6.is-info and paragraph.is-info
   const garmentItems = document.querySelectorAll('.garment_item');
-  const headings = document.querySelectorAll('.garment_heading');
-  const paragraphs = document.querySelectorAll('.garment_paragraph');
+  const headings = document.querySelectorAll('.h-h6.is-info');
+  const paragraphs = document.querySelectorAll('.paragraph.is-info');
 
   console.log('garmentItems:', garmentItems);
   console.log('headings:', headings);
@@ -86,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show the first heading and paragraph by default
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(`.garment_heading[data-garment-id="${firstGarmentId}"]`);
-    const defaultParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${firstGarmentId}"]`);
+    const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
+    const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
     console.log("Default Garment ID:", firstGarmentId);  // Debug output
     console.log("Default Heading:", defaultHeading);    // Debug output
     console.log("Default Paragraph:", defaultParagraph);  // Debug output
@@ -101,17 +105,19 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf(target);
     gsap.fromTo(target, 
       { opacity: 0, y: '-100%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: 0.5, ease: 'power2.out' });
+      { opacity: 1, y: '0%', duration: garmentsDuration, ease: 'power2.out' });
   };
 
   const hideContent = (target) => {
     gsap.killTweensOf(target);
-    gsap.to(target, 
     return gsap.to(target, 
-      { opacity: 0, y: '100%', duration: 0.5, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, y: '100%', duration: garmentsDuration, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
-@ -116,13 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
+  };
+
+  garmentItems.forEach(item => {
+    item.addEventListener('click', () => {
       const garmentId = item.getAttribute('data-garment-id');
       console.log(`Clicked Garment Item with ID: ${garmentId}`);
 
@@ -120,33 +126,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Hide all headings and paragraphs
       headings.forEach(heading => {
-        hideContent(heading);
         if (heading.style.visibility === 'visible') {
-          tl.add(hideContent(heading));
+          tl.add(hideContent(heading), 0);  // Ensure they hide at the same time
         }
       });
 
       paragraphs.forEach(paragraph => {
-        hideContent(paragraph);
         if (paragraph.style.visibility === 'visible') {
-          tl.add(hideContent(paragraph));
+          tl.add(hideContent(paragraph), 0);  // Ensure they hide at the same time
         }
       });
 
       // Show the corresponding heading and paragraph
-@ -130,17 +137,17 @@
-      const targetParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${garmentId}"]`);
+      const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
+      const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
-        showContent(targetHeading);
-        tl.add(() => showContent(targetHeading));
+        tl.add(() => showContent(targetHeading), `-=${garmentsOverlap}`);  // Start showing with overlap
       } else {
         console.error(`No matching heading found with data-garment-id="${garmentId}"`);
       }
 
       if (targetParagraph) {
-        showContent(targetParagraph);
-        tl.add(() => showContent(targetParagraph));
+        tl.add(() => showContent(targetParagraph), `-=${garmentsOverlap}`);  // Start showing with overlap
       } else {
         console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
       }
