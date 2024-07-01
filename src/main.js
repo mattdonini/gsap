@@ -1,15 +1,9 @@
-@ -1,158 +1,158 @@
+@ -1,111 +1,111 @@
 import './styles/style.css';
 import { gsap } from "gsap";
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Configurable variables for animation timing
-  const threadsDuration = 0.2; // Duration of the hide and show animations for threads
-  const garmentsDuration = 0.3; // Duration of the hide and show animations for garments
-  const garmentsOverlap = 0.3; // Overlap time for synchronization for garments
-  const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
-
-  // Script for threads_title-item and threads_trigger-item
+  // Existing functionality for threads_title-item and threads_trigger-item
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
@@ -23,13 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf(target);
     gsap.fromTo(target, 
       { opacity: 0, y: '-30%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: threadsDuration, ease: 'power2.out' });
+      { opacity: 1, y: '0%', duration: 0.2, ease: 'power2.out' });
   };
 
   const slideOut = (target) => {
     gsap.killTweensOf(target);
     return gsap.to(target,
-      { opacity: 0, y: '30%', duration: threadsDuration, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, y: '30%', duration: 0.2, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
@@ -71,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Script for garment_heading and garment_paragraph
+  // New functionality for garment_heading and garment_paragraph based on garment_item clicks
   const garmentItems = document.querySelectorAll('.garment_item');
   const headings = document.querySelectorAll('.garment_heading');
   const paragraphs = document.querySelectorAll('.garment_paragraph');
@@ -107,19 +101,17 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf(target);
     gsap.fromTo(target, 
       { opacity: 0, y: '-100%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: garmentsDuration, ease: 'power2.out' });
+      { opacity: 1, y: '0%', duration: 0.5, ease: 'power2.out' });
   };
 
   const hideContent = (target) => {
     gsap.killTweensOf(target);
+    gsap.to(target, 
     return gsap.to(target, 
-      { opacity: 0, y: '100%', duration: garmentsDuration, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, y: '100%', duration: 0.5, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
-  };
-
-  garmentItems.forEach(item => {
-    item.addEventListener('click', () => {
+@ -116,13 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const garmentId = item.getAttribute('data-garment-id');
       console.log(`Clicked Garment Item with ID: ${garmentId}`);
 
@@ -128,29 +120,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Hide all headings and paragraphs
       headings.forEach(heading => {
+        hideContent(heading);
         if (heading.style.visibility === 'visible') {
-          tl.add(hideContent(heading), 0);  // Ensure they hide at the same time
+          tl.add(hideContent(heading));
         }
       });
 
       paragraphs.forEach(paragraph => {
+        hideContent(paragraph);
         if (paragraph.style.visibility === 'visible') {
-          tl.add(hideContent(paragraph), 0);  // Ensure they hide at the same time
+          tl.add(hideContent(paragraph));
         }
       });
 
       // Show the corresponding heading and paragraph
-      const targetHeading = document.querySelector(`.garment_heading[data-garment-id="${garmentId}"]`);
+@ -130,17 +137,17 @@
       const targetParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
-        tl.add(() => showContent(targetHeading), `-=${garmentsOverlap}`);  // Start showing with overlap
+        showContent(targetHeading);
+        tl.add(() => showContent(targetHeading));
       } else {
         console.error(`No matching heading found with data-garment-id="${garmentId}"`);
       }
 
       if (targetParagraph) {
-        tl.add(() => showContent(targetParagraph), `-=${garmentsOverlap}`);  // Start showing with overlap
+        showContent(targetParagraph);
+        tl.add(() => showContent(targetParagraph));
       } else {
         console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
       }
