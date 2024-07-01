@@ -2,6 +2,7 @@ import './styles/style.css';
 import { gsap } from "gsap";
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Existing functionality for threads_title-item and threads_trigger-item
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
@@ -15,13 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf(target);
     gsap.fromTo(target, 
       { opacity: 0, y: '-30%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: 0.02, ease: 'power2.out' });
+      { opacity: 1, y: '0%', duration: 0.2, ease: 'power2.out' });
   };
 
   const slideOut = (target) => {
     gsap.killTweensOf(target);
     return gsap.to(target,
-      { opacity: 0, y: '30%', duration: 0.02, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, y: '30%', duration: 0.2, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
@@ -59,6 +60,66 @@ document.addEventListener('DOMContentLoaded', () => {
         tl.add(() => slideIn(target));
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
+      }
+    });
+  });
+
+  // New functionality for garment_heading and garment_paragraph based on garment_item clicks
+  const garmentItems = document.querySelectorAll('.garment_item');
+  const headings = document.querySelectorAll('.garment_heading');
+  const paragraphs = document.querySelectorAll('.garment_paragraph');
+
+  console.log('garmentItems:', garmentItems);
+  console.log('headings:', headings);
+  console.log('paragraphs:', paragraphs);
+
+  // Hide all headings and paragraphs initially
+  headings.forEach(heading => {
+    gsap.set(heading, { opacity: 0, visibility: 'hidden' });
+  });
+
+  paragraphs.forEach(paragraph => {
+    gsap.set(paragraph, { opacity: 0, visibility: 'hidden' });
+  });
+
+  const showContent = (target) => {
+    gsap.killTweensOf(target);
+    gsap.to(target, { opacity: 1, visibility: 'visible', duration: 0.5, ease: 'power2.out' });
+  };
+
+  const hideContent = (target) => {
+    gsap.killTweensOf(target);
+    gsap.to(target, { opacity: 0, visibility: 'hidden', duration: 0.5, ease: 'power2.in' });
+  };
+
+  garmentItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const garmentId = item.getAttribute('data-garment-id');
+      console.log(`Clicked Garment Item with ID: ${garmentId}`);
+
+      // Hide all headings and paragraphs
+      headings.forEach(heading => {
+        hideContent(heading);
+      });
+
+      paragraphs.forEach(paragraph => {
+        hideContent(paragraph);
+      });
+
+      // Show the corresponding heading and paragraph
+      const targetHeading = document.querySelector(`.garment_heading[data-garment-id="${garmentId}"]`);
+      const targetParagraph = document.querySelector(`.garment_paragraph[data-garment-id="${garmentId}"]`);
+
+      if (targetHeading) {
+        showContent(targetHeading);
+      } else {
+        console.error(`No matching heading found with data-garment-id="${garmentId}"`);
+      }
+
+      if (targetParagraph) {
+        showContent(targetParagraph);
+      } else {
+        console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
       }
     });
   });
