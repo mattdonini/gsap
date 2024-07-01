@@ -75,11 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Hide all headings and paragraphs initially
   headings.forEach(heading => {
-    gsap.set(heading, { opacity: 0, visibility: 'hidden' });
+    gsap.set(heading, { opacity: 0, visibility: 'hidden', y: '-100%' });
   });
 
   paragraphs.forEach(paragraph => {
-    gsap.set(paragraph, { opacity: 0, visibility: 'hidden' });
+    gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
   });
 
   // Show the first heading and paragraph by default
@@ -91,19 +91,24 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Heading:", defaultHeading);    // Debug output
     console.log("Default Paragraph:", defaultParagraph);  // Debug output
     if (defaultHeading && defaultParagraph) {
-      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible' });
-      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible' });
+      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible', y: '0%' });
+      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible', y: '0%' });
     }
   }
 
   const showContent = (target) => {
     gsap.killTweensOf(target);
-    gsap.to(target, { opacity: 1, visibility: 'visible', duration: 0.5, ease: 'power2.out' });
+    gsap.fromTo(target, 
+      { opacity: 0, y: '-100%', visibility: 'visible' }, 
+      { opacity: 1, y: '0%', duration: 0.5, ease: 'power2.out' });
   };
 
   const hideContent = (target) => {
     gsap.killTweensOf(target);
-    gsap.to(target, { opacity: 0, visibility: 'hidden', duration: 0.5, ease: 'power2.in' });
+    gsap.to(target, 
+      { opacity: 0, y: '100%', duration: 0.5, ease: 'power2.in', onComplete: () => {
+        target.style.visibility = 'hidden';
+      }});
   };
 
   garmentItems.forEach(item => {
