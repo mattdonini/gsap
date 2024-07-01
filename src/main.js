@@ -4,7 +4,7 @@ import { gsap } from "gsap";
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
   const threadsDuration = 0.2; // Duration of the hide and show animations for threads
-  const garmentsDuration = 0.5; // Duration of the hide and show animations for garments
+  const garmentsDuration = 0.4; // Duration of the hide and show animations for garments
   const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
 
   // Script for threads_title-item and threads_trigger-item
