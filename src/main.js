@@ -68,26 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
-  // Hide all title_wrap elements initially and set them above the viewport
+  // Hide all title_wrap elements initially
   titles.forEach(item => {
     const titleWrap = item.querySelector('.title_wrap');
-    gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    titleWrap.style.visibility = 'hidden';
   });
-
-  const slideIn = (target) => {
-    gsap.killTweensOf(target);
-    gsap.fromTo(target, 
-      { opacity: 0, y: '-30%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: threadsDuration, ease: 'power2.out' });
-  };
-
-  const slideOut = (target) => {
-    gsap.killTweensOf(target);
-    return gsap.to(target,
-      { opacity: 0, y: '30%', duration: threadsDuration, ease: 'power2.in', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
-  };
 
   // Scramble text effect
   const scrambleIn = (target) => {
@@ -121,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
-      gsap.set(defaultTarget, { opacity: 1, y: '0%', visibility: 'visible' });
+      defaultTarget.style.visibility = 'visible';
       applyScrambleEffect(defaultTarget.parentNode);
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
@@ -134,20 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
 
       if (target) {
-        // Create a timeline to sequence the slide out and slide in animations
+        // Create a timeline to sequence the scramble out and scramble in animations
         const tl = gsap.timeline();
 
-        // Slide out currently visible elements
+        // Scramble out currently visible elements
         titles.forEach(item => {
           const titleWrap = item.querySelector('.title_wrap');
           if (titleWrap.style.visibility === 'visible') {
-            tl.add(slideOut(titleWrap));
+            tl.add(() => scrambleOut(titleWrap));
           }
         });
 
-        // Slide in the new target element after the slide out is complete
+        // Scramble in the new target element after the scramble out is complete
         tl.add(() => {
-          slideIn(target);
+          target.style.visibility = 'visible';
           applyScrambleEffect(target.parentNode);
         });
       } else {
