@@ -89,10 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf([eyebrow, h3]);
     gsap.timeline()
       .fromTo(eyebrow, 
-        { opacity: 0, y: '-30%', visibility: 'visible' }, 
+        { opacity: 0, y: '-100%', visibility: 'visible' }, 
         { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0)
       .fromTo(h3, 
-        { opacity: 0, y: '-30%', visibility: 'visible' }, 
+        { opacity: 0, y: '-100%', visibility: 'visible' }, 
         { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0);
   };
 
@@ -100,11 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf([eyebrow, h3]);
     return gsap.timeline()
       .to(eyebrow,
-        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
+        { opacity: 0, y: '100%', duration: 0.6, ease: 'power2.in', onComplete: () => {
           eyebrow.style.visibility = 'hidden';
         }}, 0)
       .to(h3,
-        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
+        { opacity: 0, y: '100%', duration: 0.6, ease: 'power2.in', onComplete: () => {
           h3.style.visibility = 'hidden';
         }}, 0);
   };
@@ -185,8 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      scrambleIn(defaultHeading, 60); // Set duration for garments here
-      scrambleIn(defaultParagraph, 60); // Set duration for garments here
+      scrambleIn(defaultHeading, 20); // Set duration for garments here
+      scrambleIn(defaultParagraph, 20); // Set duration for garments here
     }
   }
 
@@ -217,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        scrambleIn(targetHeading, 60); // Set duration for garments here
-        scrambleIn(targetParagraph, 60); // Set duration for garments here
+        scrambleIn(targetHeading, 20); // Set duration for garments here
+        scrambleIn(targetParagraph, 20); // Set duration for garments here
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
