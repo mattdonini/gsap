@@ -86,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   let isAnimating = false; // To track animation state
-  let currentId = null; // To track the current ID being processed
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -127,22 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
+      if (isAnimating) return; // Prevent new animations if already animating
+
       const id = trigger.getAttribute('data-threads-id');
-
-      if (isAnimating && currentId === id) {
-        return; // Prevent new animations if already animating the same element
-      }
-
-      currentId = id;
-
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
         isAnimating = true; // Set animating flag
-
-        // Kill all previous animations
-        gsap.killTweensOf([targetEyebrow, targetH3]);
 
         // Create a timeline to sequence the slide out and slide in animations
         const tl = gsap.timeline({
@@ -160,12 +151,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
+        // Kill any running tweens on the target elements to prevent overlap
+        gsap.killTweensOf([targetEyebrow, targetH3]);
+
         // Slide in the new target elements after the slide out is complete
         tl.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
-        currentId = null; // Reset currentId if no matching target found
       }
     });
   });
