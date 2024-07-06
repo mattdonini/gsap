@@ -85,9 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
+  let isAnimating = false; // To track animation state
+
   const slideIn = (eyebrow, h3) => {
-    gsap.killTweensOf([eyebrow, h3]);
-    gsap.timeline()
+    return gsap.timeline()
       .fromTo(eyebrow, 
         { opacity: 0, y: '-100%', visibility: 'visible' }, 
         { opacity: 1, y: '0%', duration: 0.4, ease: 'power2.out' }, 0)
@@ -97,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const slideOut = (eyebrow, h3) => {
-    gsap.killTweensOf([eyebrow, h3]);
     return gsap.timeline()
       .to(eyebrow,
         { opacity: 0, y: '100%', duration: 0.4, ease: 'power2.in', onComplete: () => {
@@ -125,13 +125,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
+      if (isAnimating) return; // Prevent new animations if already animating
+      isAnimating = true;
+
       const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
         // Create a timeline to sequence the slide out and slide in animations
-        const tl = gsap.timeline();
+        const tl = gsap.timeline({
+          onComplete: () => {
+            isAnimating = false; // Reset animation state after completion
+          }
+        });
 
         // Slide out currently visible elements
         titles.forEach(item => {
@@ -143,9 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Slide in the new target elements after the slide out is complete
-        tl.add(() => slideIn(targetEyebrow, targetH3), '+=0.4'); // Add delay to ensure slideOut completes
+        tl.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
+        isAnimating = false; // Reset animation state if no matching target found
       }
     });
   });
