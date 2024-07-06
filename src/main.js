@@ -81,6 +81,23 @@ document.addEventListener('DOMContentLoaded', () => {
     target.style.visibility = 'hidden';
   };
 
+  // Select the first trigger's corresponding content by default
+  if (triggers.length > 0) {
+    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
+    const defaultTarget = document.querySelector(
+      `.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`
+    );
+    if (defaultTarget) {
+      defaultTarget.style.visibility = 'visible';
+      defaultTarget.dataset.text = defaultTarget.innerText;
+      scrambleIn(defaultTarget);
+    } else {
+      console.error(
+        `No matching target found with data-threads-id="${firstTriggerId}"`
+      );
+    }
+  }
+
   triggers.forEach((trigger) => {
     trigger.addEventListener('click', () => {
       const id = trigger.getAttribute('data-threads-id');
@@ -119,6 +136,24 @@ document.addEventListener('DOMContentLoaded', () => {
   paragraphs.forEach((paragraph) => {
     paragraph.style.visibility = 'hidden';
   });
+
+  if (garmentItems.length > 0) {
+    const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
+    const defaultHeading = document.querySelector(
+      `.h-h6.is-info[data-garment-id="${firstGarmentId}"]`
+    );
+    const defaultParagraph = document.querySelector(
+      `.paragraph.is-info[data-garment-id="${firstGarmentId}"]`
+    );
+    if (defaultHeading && defaultParagraph) {
+      defaultHeading.style.visibility = 'visible';
+      defaultHeading.dataset.text = defaultHeading.innerText;
+      defaultParagraph.style.visibility = 'visible';
+      defaultParagraph.dataset.text = defaultParagraph.innerText;
+      scrambleIn(defaultHeading);
+      scrambleIn(defaultParagraph);
+    }
+  }
 
   garmentItems.forEach((item) => {
     item.addEventListener('click', () => {
