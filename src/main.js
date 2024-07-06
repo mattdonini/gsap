@@ -1,9 +1,5 @@
 import './styles/style.css';
 import { gsap } from "gsap";
-import Splitting from "splitting";
-
-// Initialize Splitting.js
-Splitting();
 
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
@@ -18,76 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hide all title_wrap elements initially and set them above the viewport
   titles.forEach(item => {
     const titleWrap = item.querySelector('.title_wrap');
-    gsap.set(titleWrap, { y: '-100%', visibility: 'hidden' });
+    gsap.set(titleWrap, { opacity: 0, visibility: 'hidden' });
   });
 
-  // Select the first trigger's corresponding content by default
-  if (triggers.length > 0) {
-    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
-    console.log("Default Target:", defaultTarget);  // Debug output
-    if (defaultTarget) {
-      gsap.set(defaultTarget, { y: '0%', visibility: 'visible' });
-    } else {
-      console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
-    }
-  }
-
-  triggers.forEach(trigger => {
-    trigger.addEventListener('click', () => {
-      const id = trigger.getAttribute('data-threads-id');
-      const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
-
-      if (target) {
-        // Hide currently visible elements
-        titles.forEach(item => {
-          const titleWrap = item.querySelector('.title_wrap');
-          if (titleWrap.style.visibility === 'visible') {
-            gsap.set(titleWrap, { y: '-100%', visibility: 'hidden' });
-          }
-        });
-
-        // Show the new target element
-        gsap.set(target, { y: '0%', visibility: 'visible' });
-      } else {
-        console.error(`No matching target found with data-threads-id="${id}"`);
-      }
-    });
-  });
-
-  // Script for h-h6.is-info and paragraph.is-info
-  const garmentItems = document.querySelectorAll('.garment_item');
-  const headings = document.querySelectorAll('.h-h6.is-info');
-  const paragraphs = document.querySelectorAll('.paragraph.is-info');
-
-  console.log('garmentItems:', garmentItems);
-  console.log('headings:', headings);
-  console.log('paragraphs:', paragraphs);
-
-  // Hide all headings and paragraphs initially
-  headings.forEach(heading => {
-    gsap.set(heading, { visibility: 'hidden', y: '-100%' });
-  });
-
-  paragraphs.forEach(paragraph => {
-    gsap.set(paragraph, { visibility: 'hidden', y: '-100%' });
-    Splitting({ target: paragraph, by: 'lines' });
-  });
-
-  // Show the first heading and paragraph by default
-  if (garmentItems.length > 0) {
-    const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
-    const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
-    console.log("Default Garment ID:", firstGarmentId);  // Debug output
-    console.log("Default Heading:", defaultHeading);    // Debug output
-    console.log("Default Paragraph:", defaultParagraph);  // Debug output
-    if (defaultHeading && defaultParagraph) {
-      gsap.set(defaultHeading, { visibility: 'visible', y: '0%' });
-      gsap.set(defaultParagraph, { visibility: 'visible', y: '0%' });
-    }
-  }
-
+  // Initialize the text scramble class
   class TextScramble {
     constructor(el) {
       this.el = el;
@@ -145,57 +75,105 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const showScrambleContent = (target, newText) => {
-    const textScramble = new TextScramble(target);
-    textScramble.setText(newText);
+  // Function to handle the scrambling effect
+  const scrambleText = (el, newText) => {
+    const fx = new TextScramble(el);
+    return fx.setText(newText);
   };
 
-  garmentItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const garmentId = item.getAttribute('data-garment-id');
-      console.log(`Clicked Garment Item with ID: ${garmentId}`);
+  // Select the first trigger's corresponding content by default
+  if (triggers.length > 0) {
+    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
+    const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
+    if (defaultTarget) {
+      gsap.set(defaultTarget, { opacity: 1, visibility: 'visible' });
+    }
+  }
 
-      // Hide all headings and paragraphs
-      headings.forEach(heading => {
-        if (heading.style.visibility === 'visible') {
-          heading.style.visibility = 'hidden';
-          heading.innerText = ''; // Clear the text to avoid displaying it before scramble effect
-        }
-      });
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const id = trigger.getAttribute('data-threads-id');
+      const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
 
-      paragraphs.forEach(paragraph => {
-        if (paragraph.style.visibility === 'visible') {
-          paragraph.style.visibility = 'hidden';
-          paragraph.innerText = ''; // Clear the text to avoid displaying it before scramble effect
-        }
-      });
+      if (target) {
+        const newText = target.innerText;
 
-      // Show the corresponding heading and paragraph with scramble effect
-      const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
-      const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
+        // Hide all current visible elements
+        titles.forEach(item => {
+          const titleWrap = item.querySelector('.title_wrap');
+          if (titleWrap.style.visibility === 'visible') {
+            gsap.set(titleWrap, { opacity: 0, visibility: 'hidden' });
+          }
+        });
 
-      if (targetHeading) {
-        targetHeading.style.visibility = 'visible';
-        showScrambleContent(targetHeading, targetHeading.getAttribute('data-original-text'));
+        // Show the new target element with scramble effect
+        scrambleText(target, newText).then(() => {
+          gsap.set(target, { opacity: 1, visibility: 'visible' });
+        });
       } else {
-        console.error(`No matching heading found with data-garment-id="${garmentId}"`);
-      }
-
-      if (targetParagraph) {
-        targetParagraph.style.visibility = 'visible';
-        showScrambleContent(targetParagraph, targetParagraph.getAttribute('data-original-text'));
-      } else {
-        console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
+        console.error(`No matching target found with data-threads-id="${id}"`);
       }
     });
   });
 
-  // Store the original text in a data attribute for scrambling effect
+  // Script for h-h6.is-info and paragraph.is-info
+  const garmentItems = document.querySelectorAll('.garment_item');
+  const headings = document.querySelectorAll('.h-h6.is-info');
+  const paragraphs = document.querySelectorAll('.paragraph.is-info');
+
+  // Hide all headings and paragraphs initially
   headings.forEach(heading => {
-    heading.setAttribute('data-original-text', heading.innerText);
+    gsap.set(heading, { opacity: 0, visibility: 'hidden' });
   });
 
   paragraphs.forEach(paragraph => {
-    paragraph.setAttribute('data-original-text', paragraph.innerText);
+    gsap.set(paragraph, { opacity: 0, visibility: 'hidden' });
+  });
+
+  // Show the first heading and paragraph by default
+  if (garmentItems.length > 0) {
+    const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
+    const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
+    const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
+    if (defaultHeading && defaultParagraph) {
+      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible' });
+      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible' });
+    }
+  }
+
+  garmentItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const garmentId = item.getAttribute('data-garment-id');
+      const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
+      const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
+
+      if (targetHeading && targetParagraph) {
+        const headingText = targetHeading.innerText;
+        const paragraphText = targetParagraph.innerText;
+
+        // Hide all current visible headings and paragraphs
+        headings.forEach(heading => {
+          if (heading.style.visibility === 'visible') {
+            gsap.set(heading, { opacity: 0, visibility: 'hidden' });
+          }
+        });
+
+        paragraphs.forEach(paragraph => {
+          if (paragraph.style.visibility === 'visible') {
+            gsap.set(paragraph, { opacity: 0, visibility: 'hidden' });
+          }
+        });
+
+        // Show the new target heading and paragraph with scramble effect
+        scrambleText(targetHeading, headingText).then(() => {
+          gsap.set(targetHeading, { opacity: 1, visibility: 'visible' });
+        });
+        scrambleText(targetParagraph, paragraphText).then(() => {
+          gsap.set(targetParagraph, { opacity: 1, visibility: 'visible' });
+        });
+      } else {
+        console.error(`No matching elements found with data-garment-id="${garmentId}"`);
+      }
+    });
   });
 });
