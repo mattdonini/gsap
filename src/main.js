@@ -85,8 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const h3 = item.querySelector('.h-h3');
     if (eyebrow) Splitting({ target: eyebrow, by: 'chars' });
     if (h3) Splitting({ target: h3, by: 'chars' });
-    gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
-    gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    gsap.set([eyebrow, h3], { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
   const slideIn = (element) => {
@@ -115,8 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (defaultEyebrow && defaultH3) {
       Splitting({ target: defaultEyebrow, by: 'chars' });
       Splitting({ target: defaultH3, by: 'chars' });
-      gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
-      gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
+      gsap.set([defaultEyebrow, defaultH3], { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
