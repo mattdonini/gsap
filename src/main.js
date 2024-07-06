@@ -1,5 +1,9 @@
 import './styles/style.css';
 import { gsap } from "gsap";
+import Splitting from "splitting";
+
+// Initialize Splitting.js
+Splitting();
 
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
@@ -85,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   paragraphs.forEach(paragraph => {
     gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
+    Splitting({ target: paragraph, by: 'lines' });
   });
 
   // Show the first heading and paragraph by default
@@ -101,19 +106,66 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const showContent = (target) => {
-    gsap.killTweensOf(target);
-    gsap.fromTo(target, 
-      { opacity: 0, y: '-100%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: garmentsDuration, ease: 'power2.out' });
-  };
+  class TextScramble {
+    constructor(el) {
+      this.el = el;
+      this.chars = '!<>-_\\/[]{}—=+*^?#________';
+      this.update = this.update.bind(this);
+    }
 
-  const hideContent = (target) => {
-    gsap.killTweensOf(target);
-    return gsap.to(target, 
-      { opacity: 0, y: '100%', duration: garmentsDuration, ease: 'power2.in', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
+    setText(newText) {
+      const oldText = this.el.innerText;
+      const length = Math.max(oldText.length, newText.length);
+      const promise = new Promise((resolve) => (this.resolve = resolve));
+      this.queue = [];
+      for (let i = 0; i < length; i++) {
+        const from = oldText[i] || '';
+        const to = newText[i] || '';
+        const start = Math.floor(Math.random() * 20);
+        const end = start + Math.floor(Math.random() * 20);
+        this.queue.push({ from, to, start, end });
+      }
+      cancelAnimationFrame(this.frameRequest);
+      this.frame = 0;
+      this.update();
+      return promise;
+    }
+
+    update() {
+      let output = '';
+      let complete = 0;
+      for (let i = 0, n = this.queue.length; i < n; i++) {
+        let { from, to, start, end, char } = this.queue[i];
+        if (this.frame >= end) {
+          complete++;
+          output += to;
+        } else if (this.frame >= start) {
+          if (!char || Math.random() < 0.28) {
+            char = this.randomChar();
+            this.queue[i].char = char;
+          }
+          output += `<span>${char}</span>`;
+        } else {
+          output += from;
+        }
+      }
+      this.el.innerHTML = output;
+      if (complete === this.queue.length) {
+        this.resolve();
+      } else {
+        this.frameRequest = requestAnimationFrame(this.update);
+        this.frame++;
+      }
+    }
+
+    randomChar() {
+      return this.chars[Math.floor(Math.random() * this.chars.length)];
+    }
+  }
+
+  const showScrambleContent = (target) => {
+    const textScramble = new TextScramble(target);
+    textScramble.setText(target.innerText);
   };
 
   garmentItems.forEach(item => {
@@ -121,34 +173,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const garmentId = item.getAttribute('data-garment-id');
       console.log(`Clicked Garment Item with ID: ${garmentId}`);
 
-      // Create a timeline to sequence the hide and show animations
-      const tl = gsap.timeline();
-
       // Hide all headings and paragraphs
       headings.forEach(heading => {
         if (heading.style.visibility === 'visible') {
-          tl.add(hideContent(heading), 0);  // Ensure they hide at the same time
+          gsap.set(heading, { opacity: 0, visibility: 'hidden', y: '-100%' });
         }
       });
 
       paragraphs.forEach(paragraph => {
         if (paragraph.style.visibility === 'visible') {
-          tl.add(hideContent(paragraph), 0);  // Ensure they hide at the same time
+          gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
         }
       });
 
-      // Show the corresponding heading and paragraph
+      // Show the corresponding heading and paragraph with scramble effect
       const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
       const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
-        tl.add(() => showContent(targetHeading), `-=${garmentsOverlap}`);  // Start showing with overlap
+        showScrambleContent(targetHeading);
       } else {
         console.error(`No matching heading found with data-garment-id="${garmentId}"`);
       }
 
       if (targetParagraph) {
-        tl.add(() => showContent(targetParagraph), `-=${garmentsOverlap}`);  // Start showing with overlap
+        showScrambleContent(targetParagraph);
       } else {
         console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
       }
