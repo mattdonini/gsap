@@ -4,10 +4,11 @@ import { gsap } from "gsap";
 document.addEventListener('DOMContentLoaded', () => {
   // TextScramble class
   class TextScramble {
-    constructor(el) {
+    constructor(el, scrambleSpeed = { min: 10, max: 20 }) {
       this.el = el;
       this.chars = '!<>-_\\/[]{}—=+*^?#________';
       this.update = this.update.bind(this);
+      this.scrambleSpeed = scrambleSpeed; // Speed parameter
     }
 
     setText(newText) {
@@ -18,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < length; i++) {
         const from = oldText[i] || '';
         const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 20);
-        const end = start + Math.floor(Math.random() * 20);
+        const start = Math.floor(Math.random() * this.scrambleSpeed.min);
+        const end = start + Math.floor(Math.random() * this.scrambleSpeed.max);
         this.queue.push({ from, to, start, end });
       }
       cancelAnimationFrame(this.frameRequest);
@@ -70,18 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
     titleWrap.style.visibility = 'hidden';
   });
 
-  // Scramble text effect
-  const scrambleIn = (target) => {
-    const textScramble = new TextScramble(target);
+  // Scramble text effect for threads title and number
+  const scrambleInThreads = (target, speed) => {
+    const textScramble = new TextScramble(target, speed);
     return textScramble.setText(target.dataset.text);
   };
 
-  const scrambleOut = (target) => {
+  const scrambleOutThreads = (target) => {
     target.style.visibility = 'hidden';
   };
 
-  // Apply scramble effect to elements with specified classes
-  const applyScrambleEffect = (element) => {
+  // Apply scramble effect to elements with specified classes for threads
+  const applyScrambleEffectThreads = (element, speed) => {
     const eyebrow = element.querySelector('.is-eyebrow');
     const h3 = element.querySelector('.h-h3');
 
@@ -91,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
       h3.style.visibility = 'visible';
       h3.dataset.text = h3.innerText;
 
-      scrambleIn(eyebrow);
-      scrambleIn(h3);
+      scrambleInThreads(eyebrow, speed);
+      scrambleInThreads(h3, speed);
     }
   };
 
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       defaultTarget.style.visibility = 'visible';
-      applyScrambleEffect(defaultTarget.parentNode);
+      applyScrambleEffectThreads(defaultTarget.parentNode, { min: 2, max: 3 }); // Adjust speed here for threads
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -122,17 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
           const h3 = titleWrap.querySelector('.h-h3');
 
           if (eyebrow && eyebrow.style.visibility === 'visible') {
-            scrambleOut(eyebrow);
+            scrambleOutThreads(eyebrow);
           }
 
           if (h3 && h3.style.visibility === 'visible') {
-            scrambleOut(h3);
+            scrambleOutThreads(h3);
           }
         });
 
         // Scramble in the new target element
         target.style.visibility = 'visible';
-        applyScrambleEffect(target.parentNode);
+        applyScrambleEffectThreads(target.parentNode, { min: 5, max: 10 }); // Adjust speed here for threads
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -153,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const garmentScrambleIn = (target) => {
-    const textScramble = new TextScramble(target);
+    const textScramble = new TextScramble(target, { min: 30, max: 50 }); // Adjust speed here for garments
     return textScramble.setText(target.dataset.text);
   };
 
@@ -188,13 +189,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targetHeading && targetParagraph) {
         headings.forEach((heading) => {
           if (heading.style.visibility === 'visible') {
-            scrambleOut(heading);
+            scrambleOutThreads(heading);
           }
         });
 
         paragraphs.forEach((paragraph) => {
           if (paragraph.style.visibility === 'visible') {
-            scrambleOut(paragraph);
+            scrambleOutThreads(paragraph);
           }
         });
 
