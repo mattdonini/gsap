@@ -80,33 +80,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hide all title_wrap elements initially
   titles.forEach(item => {
     const titleWrap = item.querySelector('.title_wrap');
-    titleWrap.style.visibility = 'hidden';
+    gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
-  // Scramble text effect for threads title and number
-  const scrambleInThreads = (target, duration) => {
-    const textScramble = new TextScramble(target, duration);
-    return textScramble.setText(target.dataset.text);
+  const slideIn = (target) => {
+    gsap.killTweensOf(target);
+    gsap.fromTo(target, 
+      { opacity: 0, y: '-30%', visibility: 'visible' }, 
+      { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' });
   };
 
-  const scrambleOutThreads = (target) => {
-    target.style.visibility = 'hidden';
-  };
-
-  // Apply scramble effect to elements with specified classes for threads
-  const applyScrambleEffectThreads = (element, duration) => {
-    const eyebrow = element.querySelector('.is-eyebrow');
-    const h3 = element.querySelector('.h-h3');
-
-    if (eyebrow && h3) {
-      eyebrow.style.visibility = 'visible';
-      eyebrow.dataset.text = eyebrow.innerText;
-      h3.style.visibility = 'visible';
-      h3.dataset.text = h3.innerText;
-
-      scrambleInThreads(eyebrow, duration);
-      scrambleInThreads(h3, duration);
-    }
+  const slideOut = (target) => {
+    gsap.killTweensOf(target);
+    return gsap.to(target,
+      { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
+        target.style.visibility = 'hidden';
+      }});
   };
 
   // Select the first trigger's corresponding content by default
@@ -115,8 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
-      defaultTarget.style.visibility = 'visible';
-      applyScrambleEffectThreads(defaultTarget.parentNode, 20); // Set duration for threads here
+      gsap.set(defaultTarget, { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -128,24 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
 
       if (target) {
-        // Scramble out currently visible elements
+        // Create a timeline to sequence the slide out and slide in animations
+        const tl = gsap.timeline();
+
+        // Slide out currently visible elements
         titles.forEach(item => {
           const titleWrap = item.querySelector('.title_wrap');
-          const eyebrow = titleWrap.querySelector('.is-eyebrow');
-          const h3 = titleWrap.querySelector('.h-h3');
-
-          if (eyebrow && eyebrow.style.visibility === 'visible') {
-            scrambleOutThreads(eyebrow);
-          }
-
-          if (h3 && h3.style.visibility === 'visible') {
-            scrambleOutThreads(h3);
+          if (titleWrap.style.visibility === 'visible') {
+            tl.add(slideOut(titleWrap));
           }
         });
 
-        // Scramble in the new target element
-        target.style.visibility = 'visible';
-        applyScrambleEffectThreads(target.parentNode, 20); // Set duration for threads here
+        // Slide in the new target element after the slide out is complete
+        tl.add(() => slideIn(target));
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -165,9 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
     paragraph.style.visibility = 'hidden';
   });
 
-  const garmentScrambleIn = (target, duration) => {
+  const scrambleIn = (target, duration) => {
     const textScramble = new TextScramble(target, duration);
     return textScramble.setText(target.dataset.text);
+  };
+
+  const scrambleOut = (target) => {
+    target.style.visibility = 'hidden';
   };
 
   if (garmentItems.length > 0) {
@@ -183,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      garmentScrambleIn(defaultHeading, 20); // Set duration for garments here
-      garmentScrambleIn(defaultParagraph, 20); // Set duration for garments here
+      scrambleIn(defaultHeading, 20); // Set duration for garments here
+      scrambleIn(defaultParagraph, 20); // Set duration for garments here
     }
   }
 
@@ -201,13 +188,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targetHeading && targetParagraph) {
         headings.forEach((heading) => {
           if (heading.style.visibility === 'visible') {
-            scrambleOutThreads(heading);
+            scrambleOut(heading);
           }
         });
 
         paragraphs.forEach((paragraph) => {
           if (paragraph.style.visibility === 'visible') {
-            scrambleOutThreads(paragraph);
+            scrambleOut(paragraph);
           }
         });
 
@@ -215,8 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        garmentScrambleIn(targetHeading, 20); // Set duration for garments here
-        garmentScrambleIn(targetParagraph, 20); // Set duration for garments here
+        scrambleIn(targetHeading, 60); // Set duration for garments here
+        scrambleIn(targetParagraph, 60); // Set duration for garments here
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
