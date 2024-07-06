@@ -143,8 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Slide in the new target elements after the slide out is complete
-        tl.add(() => slideIn(targetEyebrow.querySelectorAll('.letter')), "+=0.1");
-        tl.add(() => slideIn(targetH3.querySelectorAll('.letter')), "+=0.1");
+        tl.add(() => {
+          slideIn(targetEyebrow.querySelectorAll('.letter'));
+          slideIn(targetH3.querySelectorAll('.letter'));
+        }, "+=0.1");
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
