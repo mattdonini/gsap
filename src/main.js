@@ -158,6 +158,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const scrambleIn = (target) => {
+    const textScramble = new TextScramble(target);
+    return textScramble.setText(target.dataset.text);
+  };
+
+  const scrambleOut = (target) => {
+    target.style.visibility = 'hidden';
+  };
+
   garmentItems.forEach((item) => {
     item.addEventListener('click', () => {
       const garmentId = item.getAttribute('data-garment-id');
