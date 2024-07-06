@@ -5,16 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Splitting
   Splitting();
 
+  // Easing function (easeOutExpo)
   const easeOutExpo = (t) => {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
   };
 
+  // TextScramble class with easing and duration
   class TextScramble {
     constructor(el, duration = 60) {
       this.el = el;
       this.chars = '!<>-_\\/[]{}—=+*^?#________';
       this.update = this.update.bind(this);
-      this.duration = duration;
+      this.duration = duration; // Duration in frames
     }
 
     setText(newText) {
@@ -87,47 +89,60 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const slideIn = (element) => {
-    gsap.set(element, { visibility: 'visible' });
-    gsap.fromTo(element.querySelectorAll('.char'), 
-      { opacity: 0, y: '100%' }, 
-      { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }
-    );
+    gsap.killTweensOf(element);
+    gsap.timeline()
+      .fromTo(element.querySelectorAll('.char'), 
+        { opacity: 0, y: '100%' }, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }
+      );
   };
 
   const slideOut = (element) => {
-    return gsap.to(element.querySelectorAll('.char'), 
-      { opacity: 0, y: '-100%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
-        element.style.visibility = 'hidden';
-      }}
-    );
+    gsap.killTweensOf(element);
+    return gsap.timeline()
+      .to(element.querySelectorAll('.char'), 
+        { opacity: 0, y: '-100%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
+          element.style.visibility = 'hidden';
+        }}
+      );
   };
 
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    const defaultElements = document.querySelectorAll(`.threads_title-item[data-threads-id="${firstTriggerId}"] .is-eyebrow, .threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
-    defaultElements.forEach(el => gsap.set(el, { opacity: 1, y: '0%', visibility: 'visible' }));
+    const defaultEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .is-eyebrow`);
+    const defaultH3 = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
+    if (defaultEyebrow && defaultH3) {
+      gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
+      gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
+    } else {
+      console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
+    }
   }
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       const id = trigger.getAttribute('data-threads-id');
-      const targetElements = document.querySelectorAll(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow, .threads_title-item[data-threads-id="${id}"] .h-h3`);
+      const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
+      const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
-      if (targetElements.length > 0) {
+      if (targetEyebrow && targetH3) {
         const tl = gsap.timeline();
 
         titles.forEach(item => {
-          const elements = item.querySelectorAll('.is-eyebrow, .h-h3');
-          elements.forEach(el => {
-            if (el.style.visibility === 'visible') {
-              tl.add(slideOut(el));
-            }
-          });
+          const eyebrow = item.querySelector('.is-eyebrow');
+          const h3 = item.querySelector('.h-h3');
+          if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
+            tl.add(slideOut(eyebrow));
+            tl.add(slideOut(h3));
+          }
         });
 
         tl.add(() => {
-          targetElements.forEach(el => slideIn(el));
+          targetEyebrow.style.visibility = 'visible';
+          targetH3.style.visibility = 'visible';
+          slideIn(targetEyebrow);
+          slideIn(targetH3);
         });
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
