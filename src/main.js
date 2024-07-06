@@ -85,19 +85,28 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
-  const slideIn = (target) => {
-    gsap.killTweensOf(target);
-    gsap.fromTo(target, 
-      { opacity: 0, y: '-30%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' });
+  const slideIn = (eyebrow, h3) => {
+    gsap.killTweensOf([eyebrow, h3]);
+    gsap.timeline()
+      .fromTo(eyebrow, 
+        { opacity: 0, y: '-30%', visibility: 'visible' }, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0)
+      .fromTo(h3, 
+        { opacity: 0, y: '-30%', visibility: 'visible' }, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0);
   };
 
-  const slideOut = (target) => {
-    gsap.killTweensOf(target);
-    return gsap.to(target,
-      { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
+  const slideOut = (eyebrow, h3) => {
+    gsap.killTweensOf([eyebrow, h3]);
+    return gsap.timeline()
+      .to(eyebrow,
+        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
+          eyebrow.style.visibility = 'hidden';
+        }}, 0)
+      .to(h3,
+        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
+          h3.style.visibility = 'hidden';
+        }}, 0);
   };
 
   // Select the first trigger's corresponding content by default
@@ -128,17 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
         titles.forEach(item => {
           const eyebrow = item.querySelector('.is-eyebrow');
           const h3 = item.querySelector('.h-h3');
-          if (eyebrow.style.visibility === 'visible') {
-            tl.add(slideOut(eyebrow));
-          }
-          if (h3.style.visibility === 'visible') {
-            tl.add(slideOut(h3));
+          if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
+            tl.add(slideOut(eyebrow, h3));
           }
         });
 
         // Slide in the new target elements after the slide out is complete
-        tl.add(() => slideIn(targetEyebrow));
-        tl.add(() => slideIn(targetH3));
+        tl.add(() => slideIn(targetEyebrow, targetH3));
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
