@@ -7,13 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
   };
 
-  // TextScramble class with easing
+  // TextScramble class with easing and duration
   class TextScramble {
-    constructor(el, speedFactor = 1, duration = 60) {
+    constructor(el, duration = 60) {
       this.el = el;
       this.chars = '!<>-_\\/[]{}—=+*^?#________';
       this.update = this.update.bind(this);
-      this.speedFactor = speedFactor; // Speed factor
       this.duration = duration; // Duration in frames
     }
 
@@ -25,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < length; i++) {
         const from = oldText[i] || '';
         const to = newText[i] || '';
-        const start = Math.floor(Math.random() * this.speedFactor);
-        const end = start + Math.floor(this.duration * this.speedFactor);
+        const start = Math.floor(Math.random() * 10);
+        const end = start + this.duration;
         this.queue.push({ from, to, start, end });
       }
       cancelAnimationFrame(this.frameRequest);
@@ -85,8 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Scramble text effect for threads title and number
-  const scrambleInThreads = (target, speedFactor, duration) => {
-    const textScramble = new TextScramble(target, speedFactor, duration);
+  const scrambleInThreads = (target, duration) => {
+    const textScramble = new TextScramble(target, duration);
     return textScramble.setText(target.dataset.text);
   };
 
@@ -95,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Apply scramble effect to elements with specified classes for threads
-  const applyScrambleEffectThreads = (element, speedFactor, duration) => {
+  const applyScrambleEffectThreads = (element, duration) => {
     const eyebrow = element.querySelector('.is-eyebrow');
     const h3 = element.querySelector('.h-h3');
 
@@ -105,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
       h3.style.visibility = 'visible';
       h3.dataset.text = h3.innerText;
 
-      scrambleInThreads(eyebrow, speedFactor, duration);
-      scrambleInThreads(h3, speedFactor, duration);
+      scrambleInThreads(eyebrow, duration);
+      scrambleInThreads(h3, duration);
     }
   };
 
@@ -117,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       defaultTarget.style.visibility = 'visible';
-      applyScrambleEffectThreads(defaultTarget.parentNode, 0.5, 60); // Adjust speed here for threads
+      applyScrambleEffectThreads(defaultTarget.parentNode, 30); // Set duration for threads
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -146,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Scramble in the new target element
         target.style.visibility = 'visible';
-        applyScrambleEffectThreads(target.parentNode, 0.5, 60); // Adjust speed here for threads
+        applyScrambleEffectThreads(target.parentNode, 30); // Set duration for threads
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -166,8 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
     paragraph.style.visibility = 'hidden';
   });
 
-  const garmentScrambleIn = (target) => {
-    const textScramble = new TextScramble(target, 2, 60); // Adjust speed here for garments
+  const garmentScrambleIn = (target, duration) => {
+    const textScramble = new TextScramble(target, duration);
     return textScramble.setText(target.dataset.text);
   };
 
@@ -184,8 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      garmentScrambleIn(defaultHeading);
-      garmentScrambleIn(defaultParagraph);
+      garmentScrambleIn(defaultHeading, 60); // Set duration for garments
+      garmentScrambleIn(defaultParagraph, 60); // Set duration for garments
     }
   }
 
@@ -216,8 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        garmentScrambleIn(targetHeading);
-        garmentScrambleIn(targetParagraph);
+        garmentScrambleIn(targetHeading, 120); // Set duration for garments
+        garmentScrambleIn(targetParagraph, 120); // Set duration for garments
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
