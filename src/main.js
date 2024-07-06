@@ -1,5 +1,6 @@
 import './styles/style.css';
 import { gsap } from "gsap";
+import Splitting from "splitting";
 
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Splitting
@@ -92,10 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.killTweensOf([eyebrow, h3]);
     gsap.timeline()
       .fromTo(eyebrow.querySelectorAll('.char'), 
-        { opacity: 0, y: '-100%', visibility: 'visible' }, 
+        { opacity: 0, y: '-100%' }, 
         { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0)
       .fromTo(h3.querySelectorAll('.char'), 
-        { opacity: 0, y: '-100%', visibility: 'visible' }, 
+        { opacity: 0, y: '-100%' }, 
         { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0);
   };
 
