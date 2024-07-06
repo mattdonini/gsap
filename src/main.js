@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const scrambleText = (el, newText) => {
     const fx = new TextScramble(el);
     return fx.setText(newText).then(() => {
-      el.innerText = newText;
+      el.innerText = newText; // Ensure the final text is set
     });
   };
 
