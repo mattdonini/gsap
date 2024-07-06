@@ -77,10 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
-  // Hide all title_wrap elements initially
+  // Hide all h3 and is-eyebrow elements initially
   titles.forEach(item => {
-    const titleWrap = item.querySelector('.title_wrap');
-    gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    const eyebrow = item.querySelector('.is-eyebrow');
+    const h3 = item.querySelector('.h-h3');
+    gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
   const slideIn = (target) => {
@@ -101,10 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
-    console.log("Default Target:", defaultTarget);  // Debug output
-    if (defaultTarget) {
-      gsap.set(defaultTarget, { opacity: 1, y: '0%', visibility: 'visible' });
+    const defaultEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .is-eyebrow`);
+    const defaultH3 = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
+    console.log("Default Target:", defaultEyebrow, defaultH3);  // Debug output
+    if (defaultEyebrow && defaultH3) {
+      gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
+      gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -113,22 +117,28 @@ document.addEventListener('DOMContentLoaded', () => {
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       const id = trigger.getAttribute('data-threads-id');
-      const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
+      const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
+      const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
-      if (target) {
+      if (targetEyebrow && targetH3) {
         // Create a timeline to sequence the slide out and slide in animations
         const tl = gsap.timeline();
 
         // Slide out currently visible elements
         titles.forEach(item => {
-          const titleWrap = item.querySelector('.title_wrap');
-          if (titleWrap.style.visibility === 'visible') {
-            tl.add(slideOut(titleWrap));
+          const eyebrow = item.querySelector('.is-eyebrow');
+          const h3 = item.querySelector('.h-h3');
+          if (eyebrow.style.visibility === 'visible') {
+            tl.add(slideOut(eyebrow));
+          }
+          if (h3.style.visibility === 'visible') {
+            tl.add(slideOut(h3));
           }
         });
 
-        // Slide in the new target element after the slide out is complete
-        tl.add(() => slideIn(target));
+        // Slide in the new target elements after the slide out is complete
+        tl.add(() => slideIn(targetEyebrow));
+        tl.add(() => slideIn(targetH3));
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -170,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      scrambleIn(defaultHeading, 20); // Set duration for garments here
-      scrambleIn(defaultParagraph, 20); // Set duration for garments here
+      scrambleIn(defaultHeading, 60); // Set duration for garments here
+      scrambleIn(defaultParagraph, 60); // Set duration for garments here
     }
   }
 
