@@ -110,6 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }}, 0);
   };
 
+  const resetVisibility = () => {
+    titles.forEach(item => {
+      const eyebrow = item.querySelector('.is-eyebrow');
+      const h3 = item.querySelector('.h-h3');
+      gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
+      gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    });
+  };
+
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
@@ -131,12 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (currentTimeline) {
         currentTimeline.kill(); // Stop the current timeline
-        titles.forEach(item => {
-          const eyebrow = item.querySelector('.is-eyebrow');
-          const h3 = item.querySelector('.h-h3');
-          gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
-          gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
-        });
+        resetVisibility(); // Reset the visibility of elements
       }
 
       const id = trigger.getAttribute('data-threads-id');
