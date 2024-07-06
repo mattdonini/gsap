@@ -1,6 +1,7 @@
 import './styles/style.css';
 import { gsap } from "gsap";
 import Splitting from "splitting";
+import "splitting/dist/splitting.css"; // Ensure Splitting.js styles are included
 
 document.addEventListener('DOMContentLoaded', () => {
   // Easing function (easeOutExpo)
@@ -78,26 +79,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
-  // Hide all h3 and is-eyebrow elements initially
+  // Split text into individual characters
   titles.forEach(item => {
     const eyebrow = item.querySelector('.is-eyebrow');
     const h3 = item.querySelector('.h-h3');
+    if (eyebrow) Splitting({ target: eyebrow, by: 'chars' });
+    if (h3) Splitting({ target: h3, by: 'chars' });
     gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
     gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
-  const slideIn = (target) => {
-    gsap.killTweensOf(target);
-    const chars = target.querySelectorAll('.char');
+  const slideIn = (element) => {
+    gsap.killTweensOf(element);
+    const chars = element.querySelectorAll('.char');
     gsap.timeline()
       .fromTo(chars, 
         { opacity: 0, y: '100%' }, 
         { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 });
   };
 
-  const slideOut = (target) => {
-    gsap.killTweensOf(target);
-    const chars = target.querySelectorAll('.char');
+  const slideOut = (element) => {
+    gsap.killTweensOf(element);
+    const chars = element.querySelectorAll('.char');
     return gsap.timeline()
       .to(chars, 
         { opacity: 0, y: '-100%', duration: 0.6, ease: 'power2.in', stagger: 0.05 });
