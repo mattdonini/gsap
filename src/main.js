@@ -2,10 +2,6 @@ import './styles/style.css';
 import { gsap } from "gsap";
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Configurable variables for animation timing
-  const threadsDuration = 0.2; // Duration of the hide and show animations for threads
-  const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
-
   // TextScramble class
   class TextScramble {
     constructor(el) {
@@ -119,22 +115,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
 
       if (target) {
-        // Create a timeline to sequence the scramble out and scramble in animations
-        const tl = gsap.timeline();
-
         // Scramble out currently visible elements
         titles.forEach(item => {
           const titleWrap = item.querySelector('.title_wrap');
-          if (titleWrap.style.visibility === 'visible') {
-            tl.add(() => scrambleOut(titleWrap));
+          const eyebrow = titleWrap.querySelector('.is-eyebrow');
+          const h3 = titleWrap.querySelector('.h-h3');
+
+          if (eyebrow && eyebrow.style.visibility === 'visible') {
+            scrambleOut(eyebrow);
+          }
+
+          if (h3 && h3.style.visibility === 'visible') {
+            scrambleOut(h3);
           }
         });
 
-        // Scramble in the new target element after the scramble out is complete
-        tl.add(() => {
-          target.style.visibility = 'visible';
-          applyScrambleEffect(target.parentNode);
-        });
+        // Scramble in the new target element
+        target.style.visibility = 'visible';
+        applyScrambleEffect(target.parentNode);
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -154,6 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
     paragraph.style.visibility = 'hidden';
   });
 
+  const garmentScrambleIn = (target) => {
+    const textScramble = new TextScramble(target);
+    return textScramble.setText(target.dataset.text);
+  };
+
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
     const defaultHeading = document.querySelector(
@@ -167,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      scrambleIn(defaultHeading);
-      scrambleIn(defaultParagraph);
+      garmentScrambleIn(defaultHeading);
+      garmentScrambleIn(defaultParagraph);
     }
   }
 
@@ -199,8 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        scrambleIn(targetHeading);
-        scrambleIn(targetParagraph);
+        garmentScrambleIn(targetHeading);
+        garmentScrambleIn(targetParagraph);
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
