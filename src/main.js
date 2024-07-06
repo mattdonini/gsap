@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   let isAnimating = false; // To track animation state
+  let currentTimeline = null; // To track the current timeline
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -128,13 +129,23 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isAnimating) return; // Prevent new animations if already animating
       isAnimating = true;
 
+      if (currentTimeline) {
+        currentTimeline.kill(); // Stop the current timeline
+        titles.forEach(item => {
+          const eyebrow = item.querySelector('.is-eyebrow');
+          const h3 = item.querySelector('.h-h3');
+          gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
+          gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
+        });
+      }
+
       const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
         // Create a timeline to sequence the slide out and slide in animations
-        const tl = gsap.timeline({
+        currentTimeline = gsap.timeline({
           onComplete: () => {
             isAnimating = false; // Reset animation state after completion
           }
@@ -145,12 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const eyebrow = item.querySelector('.is-eyebrow');
           const h3 = item.querySelector('.h-h3');
           if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
-            tl.add(slideOut(eyebrow, h3), 0);
+            currentTimeline.add(slideOut(eyebrow, h3), 0);
           }
         });
 
         // Slide in the new target elements after the slide out is complete
-        tl.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
+        currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
