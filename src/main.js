@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       this.el.innerHTML = output;
       if (complete === this.queue.length) {
+        this.el.innerText = this.queue.map(q => q.to).join(''); // Ensure final text is set
         this.resolve();
       } else {
         this.frameRequest = requestAnimationFrame(this.update);
