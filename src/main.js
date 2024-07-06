@@ -93,20 +93,20 @@ document.addEventListener('DOMContentLoaded', () => {
     return gsap.timeline()
       .fromTo(eyebrow, 
         { opacity: 0, y: '-100%', visibility: 'visible' }, 
-        { opacity: 1, y: '0%', duration: 0.4, ease: 'power2.out' }, 0)
+        { opacity: 1, y: '0%', duration: 0.25, ease: 'power2.out' }, 0)
       .fromTo(h3, 
         { opacity: 0, y: '-100%', visibility: 'visible' }, 
-        { opacity: 1, y: '0%', duration: 0.4, ease: 'power2.out' }, 0);
+        { opacity: 1, y: '0%', duration: 0.25, ease: 'power2.out' }, 0);
   };
 
   const slideOut = (eyebrow, h3) => {
     return gsap.timeline()
       .to(eyebrow,
-        { opacity: 0, y: '100%', duration: 0.4, ease: 'power2.in', onComplete: () => {
+        { opacity: 0, y: '100%', duration: 0.25, ease: 'power2.in', onComplete: () => {
           eyebrow.style.visibility = 'hidden';
         }}, 0)
       .to(h3,
-        { opacity: 0, y: '100%', duration: 0.4, ease: 'power2.in', onComplete: () => {
+        { opacity: 0, y: '100%', duration: 0.25, ease: 'power2.in', onComplete: () => {
           h3.style.visibility = 'hidden';
         }}, 0);
   };
