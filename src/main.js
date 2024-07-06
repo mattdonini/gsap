@@ -64,37 +64,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Utility function to split text into spans
-  const splitTextToSpans = (el) => {
-    const text = el.innerText;
-    el.innerHTML = text.split('').map(char => `<span>${char}</span>`).join('');
-  };
-
   // Script for threads_title-item and threads_trigger-item
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
-  // Hide all title_wrap elements initially and split text into spans
+  // Hide all title_wrap elements initially and set them above the viewport
   titles.forEach(item => {
     const titleWrap = item.querySelector('.title_wrap');
-    splitTextToSpans(titleWrap);
-    gsap.set(titleWrap.querySelectorAll('span'), { opacity: 0, y: '-100%', visibility: 'hidden' });
+    gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
   const slideIn = (target) => {
-    const letters = target.querySelectorAll('span');
     gsap.killTweensOf(target);
-    gsap.set(target, { visibility: 'visible' });
-    gsap.fromTo(letters, 
-      { opacity: 0, y: '-30%' }, 
-      { opacity: 1, y: '0%', duration: threadsDuration, ease: 'power2.out', stagger: 0.05 });
+    gsap.fromTo(target, 
+      { opacity: 0, y: '-30%', visibility: 'visible' }, 
+      { opacity: 1, y: '0%', duration: threadsDuration, ease: 'power2.out' });
   };
 
   const slideOut = (target) => {
-    const letters = target.querySelectorAll('span');
     gsap.killTweensOf(target);
-    return gsap.to(letters, 
-      { opacity: 0, y: '30%', duration: threadsDuration, ease: 'power2.in', stagger: 0.05, onComplete: () => {
+    return gsap.to(target,
+      { opacity: 0, y: '30%', duration: threadsDuration, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
@@ -105,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
-      gsap.set(defaultTarget.querySelectorAll('span'), { opacity: 1, y: '0%', visibility: 'visible' });
+      gsap.set(defaultTarget, { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
