@@ -138,12 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const eyebrow = item.querySelector('.is-eyebrow');
           const h3 = item.querySelector('.h-h3');
           if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
-            tl.add(slideOut(eyebrow, h3));
+            tl.add(slideOut(eyebrow, h3), 0);
           }
         });
 
         // Slide in the new target elements after the slide out is complete
-        tl.add(() => slideIn(targetEyebrow, targetH3));
+        tl.add(() => slideIn(targetEyebrow, targetH3), '+=0.4'); // Add delay to ensure slideOut completes
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
