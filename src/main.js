@@ -135,7 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
-      if (isAnimating) return; // Prevent new animations if already animating
+      if (isAnimating) {
+        // Cancel the current timeline if it exists and is playing
+        if (currentTimeline) {
+          currentTimeline.progress(1);
+        }
+      }
+
       isAnimating = true;
 
       const id = trigger.getAttribute('data-threads-id');
