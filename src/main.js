@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let isAnimating = false; // To track animation state
   let currentTimeline = null; // To track the current timeline
+  let visibleElements = { eyebrow: null, h3: null }; // To track the currently visible elements
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -110,15 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }}, 0);
   };
 
-  const resetVisibility = () => {
-    titles.forEach(item => {
-      const eyebrow = item.querySelector('.is-eyebrow');
-      const h3 = item.querySelector('.h-h3');
-      gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
-      gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
-    });
-  };
-
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
@@ -128,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (defaultEyebrow && defaultH3) {
       gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
       gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
+      visibleElements = { eyebrow: defaultEyebrow, h3: defaultH3 };
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -136,9 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
-        // Cancel the current timeline if it exists and is playing
         if (currentTimeline) {
-          currentTimeline.progress(1);
+          currentTimeline.kill(); // Kill the current timeline if it exists and is playing
+        }
+        if (visibleElements.eyebrow && visibleElements.h3) {
+          // Immediately hide the currently visible elements
+          gsap.set(visibleElements.eyebrow, { opacity: 0, y: '100%', visibility: 'hidden' });
+          gsap.set(visibleElements.h3, { opacity: 0, y: '100%', visibility: 'hidden' });
         }
       }
 
@@ -149,24 +146,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
-        // Reset visibility of all elements
-        resetVisibility();
-
         // Create a timeline to sequence the slide out and slide in animations
         currentTimeline = gsap.timeline({
           onComplete: () => {
             isAnimating = false; // Reset animation state after completion
+            visibleElements = { eyebrow: targetEyebrow, h3: targetH3 };
           }
         });
 
         // Slide out currently visible elements
-        titles.forEach(item => {
-          const eyebrow = item.querySelector('.is-eyebrow');
-          const h3 = item.querySelector('.h-h3');
-          if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
-            currentTimeline.add(slideOut(eyebrow, h3), 0);
-          }
-        });
+        if (visibleElements.eyebrow && visibleElements.h3) {
+          currentTimeline.add(slideOut(visibleElements.eyebrow, visibleElements.h3), 0);
+        }
 
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
