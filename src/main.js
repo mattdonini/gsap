@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   class TextScramble {
     constructor(el, duration = 60) {
       this.el = el;
-      this.chars = 'abcdefghijklmnopqrstuwyzx<?!@#<>';
+      this.chars = '!<>-\\/[]{}—=+*^?#_______';
       this.update = this.update.bind(this);
       this.duration = duration; // Duration in frames
     }
