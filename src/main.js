@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
   };
 
+  // Function to wrap each letter in a span
+  const wrapLetters = (element) => {
+    const text = element.innerText;
+    element.innerHTML = text.split('').map(letter => `<span class="letter">${letter}</span>`).join('');
+  };
+
   // TextScramble class with easing and duration
   class TextScramble {
     constructor(el, duration = 60) {
@@ -77,34 +83,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
 
-  // Hide all h3 and is-eyebrow elements initially
+  // Wrap letters in spans
   titles.forEach(item => {
     const eyebrow = item.querySelector('.is-eyebrow');
     const h3 = item.querySelector('.h-h3');
-    gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
-    gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    wrapLetters(eyebrow);
+    wrapLetters(h3);
+    gsap.set(eyebrow.querySelectorAll('.letter'), { opacity: 0, y: '-100%', visibility: 'hidden' });
+    gsap.set(h3.querySelectorAll('.letter'), { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
   const slideIn = (eyebrow, h3) => {
     gsap.killTweensOf([eyebrow, h3]);
     gsap.timeline()
-      .fromTo(eyebrow, 
+      .fromTo(eyebrow.querySelectorAll('.letter'), 
         { opacity: 0, y: '-30%', visibility: 'visible' }, 
-        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0)
-      .fromTo(h3, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0)
+      .fromTo(h3.querySelectorAll('.letter'), 
         { opacity: 0, y: '-30%', visibility: 'visible' }, 
-        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0);
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0);
   };
 
   const slideOut = (eyebrow, h3) => {
     gsap.killTweensOf([eyebrow, h3]);
     return gsap.timeline()
-      .to(eyebrow,
-        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
+      .to(eyebrow.querySelectorAll('.letter'),
+        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
           eyebrow.style.visibility = 'hidden';
         }}, 0)
-      .to(h3,
-        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
+      .to(h3.querySelectorAll('.letter'),
+        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
           h3.style.visibility = 'hidden';
         }}, 0);
   };
@@ -116,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultH3 = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
     console.log("Default Target:", defaultEyebrow, defaultH3);  // Debug output
     if (defaultEyebrow && defaultH3) {
-      gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
-      gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
+      gsap.set(defaultEyebrow.querySelectorAll('.letter'), { opacity: 1, y: '0%', visibility: 'visible' });
+      gsap.set(defaultH3.querySelectorAll('.letter'), { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
