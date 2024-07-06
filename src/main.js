@@ -107,7 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
       .to(h3,
         { opacity: 0, y: '100%', duration: 0.4, ease: 'power2.in', onComplete: () => {
           h3.style.visibility = 'hidden';
-        }}, 0);
+        }}, 0)
+      .set([eyebrow, h3], { clearProps: "all" }); // Clear properties to reset
   };
 
   // Select the first trigger's corresponding content by default
@@ -139,6 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (targetEyebrow && targetH3) {
         isAnimating = true; // Set animating flag
+
+        // Kill all previous animations
+        gsap.killTweensOf([targetEyebrow, targetH3]);
 
         // Create a timeline to sequence the slide out and slide in animations
         const tl = gsap.timeline({
