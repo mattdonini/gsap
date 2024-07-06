@@ -86,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   let isAnimating = false; // To track animation state
-  let currentId = null; // To track the current ID being processed
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -107,8 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .to(h3,
         { opacity: 0, y: '100%', duration: 0.4, ease: 'power2.in', onComplete: () => {
           h3.style.visibility = 'hidden';
-        }}, 0)
-      .set([eyebrow, h3], { clearProps: "all" }); // Clear properties to reset
+        }}, 0);
   };
 
   // Select the first trigger's corresponding content by default
@@ -127,23 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
+      if (isAnimating) return; // Prevent new animations if already animating
+      isAnimating = true;
+
       const id = trigger.getAttribute('data-threads-id');
-
-      if (isAnimating && currentId === id) {
-        return; // Prevent new animations if already animating the same element
-      }
-
-      currentId = id;
-
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
-        isAnimating = true; // Set animating flag
-
-        // Kill all previous animations
-        gsap.killTweensOf([targetEyebrow, targetH3]);
-
         // Create a timeline to sequence the slide out and slide in animations
         const tl = gsap.timeline({
           onComplete: () => {
@@ -160,12 +149,11 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        // Ensure the slide out animations complete before starting the new slide in animations
+        // Slide in the new target elements after the slide out is complete
         tl.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
-        currentId = null; // Reset currentId if no matching target found
       }
     });
   });
