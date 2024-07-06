@@ -21,21 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
-  const slideIn = (target) => {
-    gsap.killTweensOf(target);
-    gsap.fromTo(target, 
-      { opacity: 0, y: '-30%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: threadsDuration, ease: 'power2.out' });
-  };
-
-  const slideOut = (target) => {
-    gsap.killTweensOf(target);
-    return gsap.to(target,
-      { opacity: 0, y: '30%', duration: threadsDuration, ease: 'power2.in', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
-  };
-
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
@@ -54,19 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .title_wrap`);
 
       if (target) {
-        // Create a timeline to sequence the slide out and slide in animations
-        const tl = gsap.timeline();
-
-        // Slide out currently visible elements
+        // Hide currently visible elements
         titles.forEach(item => {
           const titleWrap = item.querySelector('.title_wrap');
           if (titleWrap.style.visibility === 'visible') {
-            tl.add(slideOut(titleWrap));
+            gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
           }
         });
 
-        // Slide in the new target element after the slide out is complete
-        tl.add(() => slideIn(target));
+        // Show the new target element
+        gsap.set(target, { opacity: 1, y: '0%', visibility: 'visible' });
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
