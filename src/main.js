@@ -4,7 +4,6 @@ import { gsap } from "gsap";
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
   const threadsDuration = 0.2; // Duration of the hide and show animations for threads
-  const garmentsDuration = 0.4; // Duration of the hide and show animations for garments
   const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
 
   // TextScramble class
@@ -178,8 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       if (targetHeading && targetParagraph) {
-        const tl = gsap.timeline();
-
         headings.forEach((heading) => {
           if (heading.style.visibility === 'visible') {
             scrambleOut(heading);
@@ -192,17 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        tl.add(() => {
-          targetHeading.style.visibility = 'visible';
-          targetHeading.dataset.text = targetHeading.innerText;
-          scrambleIn(targetHeading);
-        }, `-=${garmentsOverlap}`);
-
-        tl.add(() => {
-          targetParagraph.style.visibility = 'visible';
-          targetParagraph.dataset.text = targetParagraph.innerText;
-          scrambleIn(targetParagraph);
-        }, `-=${garmentsOverlap}`);
+        targetHeading.style.visibility = 'visible';
+        targetHeading.dataset.text = targetHeading.innerText;
+        targetParagraph.style.visibility = 'visible';
+        targetParagraph.dataset.text = targetParagraph.innerText;
+        scrambleIn(targetHeading);
+        scrambleIn(targetParagraph);
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
