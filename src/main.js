@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   let isAnimating = false; // To track animation state
+  let currentId = null; // To track the current ID being processed
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -125,14 +126,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
-      if (isAnimating) return; // Prevent new animations if already animating
-      isAnimating = true;
-
       const id = trigger.getAttribute('data-threads-id');
+
+      if (isAnimating && currentId === id) {
+        return; // Prevent new animations if already animating the same element
+      }
+
+      currentId = id;
+
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
+        isAnimating = true; // Set animating flag
+
         // Create a timeline to sequence the slide out and slide in animations
         const tl = gsap.timeline({
           onComplete: () => {
@@ -154,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
+        currentId = null; // Reset currentId if no matching target found
       }
     });
   });
