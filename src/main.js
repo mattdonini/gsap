@@ -2,13 +2,19 @@ import './styles/style.css';
 import { gsap } from "gsap";
 
 document.addEventListener('DOMContentLoaded', () => {
-  // TextScramble class
+  // Easing function (easeOutExpo)
+  const easeOutExpo = (t) => {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  };
+
+  // TextScramble class with easing
   class TextScramble {
-    constructor(el, speedFactor = 1) {
+    constructor(el, speedFactor = 1, duration = 60) {
       this.el = el;
       this.chars = '!<>-_\\/[]{}—=+*^?#________';
       this.update = this.update.bind(this);
       this.speedFactor = speedFactor; // Speed factor
+      this.duration = duration; // Duration in frames
     }
 
     setText(newText) {
@@ -20,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const from = oldText[i] || '';
         const to = newText[i] || '';
         const start = Math.floor(Math.random() * 10 * this.speedFactor);
-        const end = start + Math.floor(Math.random() * 20 * this.speedFactor);
+        const end = start + Math.floor(this.duration * this.speedFactor);
         this.queue.push({ from, to, start, end });
       }
       cancelAnimationFrame(this.frameRequest);
@@ -34,6 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
       let complete = 0;
       for (let i = 0, n = this.queue.length; i < n; i++) {
         let { from, to, start, end, char } = this.queue[i];
+        const progress = Math.min(Math.max((this.frame - start) / (end - start), 0), 1);
+        const easedProgress = easeOutExpo(progress);
+
         if (this.frame >= end) {
           complete++;
           output += to;
@@ -42,7 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
             char = this.randomChar();
             this.queue[i].char = char;
           }
-          output += `<span>${char}</span>`;
+          if (easedProgress < 1) {
+            output += `<span>${char}</span>`;
+          } else {
+            output += to;
+          }
         } else {
           output += from;
         }
@@ -72,8 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Scramble text effect for threads title and number
-  const scrambleInThreads = (target, speedFactor) => {
-    const textScramble = new TextScramble(target, speedFactor);
+  const scrambleInThreads = (target, speedFactor, duration) => {
+    const textScramble = new TextScramble(target, speedFactor, duration);
     return textScramble.setText(target.dataset.text);
   };
 
@@ -82,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Apply scramble effect to elements with specified classes for threads
-  const applyScrambleEffectThreads = (element, speedFactor) => {
+  const applyScrambleEffectThreads = (element, speedFactor, duration) => {
     const eyebrow = element.querySelector('.is-eyebrow');
     const h3 = element.querySelector('.h-h3');
 
@@ -92,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
       h3.style.visibility = 'visible';
       h3.dataset.text = h3.innerText;
 
-      scrambleInThreads(eyebrow, speedFactor);
-      scrambleInThreads(h3, speedFactor);
+      scrambleInThreads(eyebrow, speedFactor, duration);
+      scrambleInThreads(h3, speedFactor, duration);
     }
   };
 
@@ -104,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       defaultTarget.style.visibility = 'visible';
-      applyScrambleEffectThreads(defaultTarget.parentNode, 1); // Adjust speed here for threads (lower is faster)
+      applyScrambleEffectThreads(defaultTarget.parentNode, 0.5, 60); // Adjust speed here for threads
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -133,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Scramble in the new target element
         target.style.visibility = 'visible';
-        applyScrambleEffectThreads(target.parentNode, 0.5); // Adjust speed here for threads (lower is faster)
+        applyScrambleEffectThreads(target.parentNode, 0.5, 60); // Adjust speed here for threads
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -154,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const garmentScrambleIn = (target) => {
-    const textScramble = new TextScramble(target, 2); // Adjust speed here for garments (higher is slower)
+    const textScramble = new TextScramble(target, 2, 60); // Adjust speed here for garments
     return textScramble.setText(target.dataset.text);
   };
 
