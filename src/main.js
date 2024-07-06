@@ -88,23 +88,28 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
-  const slideIn = (element) => {
-    gsap.killTweensOf(element);
+  const slideIn = (eyebrow, h3) => {
+    gsap.killTweensOf([eyebrow, h3]);
     gsap.timeline()
-      .fromTo(element.querySelectorAll('.char'), 
-        { opacity: 0, y: '100%' }, 
-        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }
-      );
+      .fromTo(eyebrow.querySelectorAll('.char'), 
+        { opacity: 0, y: '-100%', visibility: 'visible' }, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0)
+      .fromTo(h3.querySelectorAll('.char'), 
+        { opacity: 0, y: '-100%', visibility: 'visible' }, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0);
   };
 
-  const slideOut = (element) => {
-    gsap.killTweensOf(element);
+  const slideOut = (eyebrow, h3) => {
+    gsap.killTweensOf([eyebrow, h3]);
     return gsap.timeline()
-      .to(element.querySelectorAll('.char'), 
-        { opacity: 0, y: '-100%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
-          element.style.visibility = 'hidden';
-        }}
-      );
+      .to(eyebrow.querySelectorAll('.char'),
+        { opacity: 0, y: '100%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
+          eyebrow.style.visibility = 'hidden';
+        }}, 0)
+      .to(h3.querySelectorAll('.char'),
+        { opacity: 0, y: '100%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
+          h3.style.visibility = 'hidden';
+        }}, 0);
   };
 
   // Select the first trigger's corresponding content by default
@@ -127,23 +132,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
+        // Create a timeline to sequence the slide out and slide in animations
         const tl = gsap.timeline();
 
+        // Slide out currently visible elements
         titles.forEach(item => {
           const eyebrow = item.querySelector('.is-eyebrow');
           const h3 = item.querySelector('.h-h3');
           if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
-            tl.add(slideOut(eyebrow));
-            tl.add(slideOut(h3));
+            tl.add(slideOut(eyebrow, h3));
           }
         });
 
-        tl.add(() => {
-          targetEyebrow.style.visibility = 'visible';
-          targetH3.style.visibility = 'visible';
-          slideIn(targetEyebrow);
-          slideIn(targetH3);
-        });
+        // Slide in the new target elements after the slide out is complete
+        tl.add(() => slideIn(targetEyebrow, targetH3));
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
