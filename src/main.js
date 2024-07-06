@@ -145,9 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const showScrambleContent = (target) => {
+  const showScrambleContent = (target, newText) => {
     const textScramble = new TextScramble(target);
-    textScramble.setText(target.innerText);
+    textScramble.setText(newText);
   };
 
   garmentItems.forEach(item => {
@@ -158,13 +158,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Hide all headings and paragraphs
       headings.forEach(heading => {
         if (heading.style.visibility === 'visible') {
-          gsap.set(heading, { opacity: 0, visibility: 'hidden', y: '-100%' });
+          heading.style.visibility = 'hidden';
+          heading.innerText = ''; // Clear the text to avoid displaying it before scramble effect
         }
       });
 
       paragraphs.forEach(paragraph => {
         if (paragraph.style.visibility === 'visible') {
-          gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
+          paragraph.style.visibility = 'hidden';
+          paragraph.innerText = ''; // Clear the text to avoid displaying it before scramble effect
         }
       });
 
@@ -173,16 +175,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
 
       if (targetHeading) {
-        showScrambleContent(targetHeading);
+        targetHeading.style.visibility = 'visible';
+        showScrambleContent(targetHeading, targetHeading.getAttribute('data-original-text'));
       } else {
         console.error(`No matching heading found with data-garment-id="${garmentId}"`);
       }
 
       if (targetParagraph) {
-        showScrambleContent(targetParagraph);
+        targetParagraph.style.visibility = 'visible';
+        showScrambleContent(targetParagraph, targetParagraph.getAttribute('data-original-text'));
       } else {
         console.error(`No matching paragraph found with data-garment-id="${garmentId}"`);
       }
     });
+  });
+
+  // Store the original text in a data attribute for scrambling effect
+  headings.forEach(heading => {
+    heading.setAttribute('data-original-text', heading.innerText);
+  });
+
+  paragraphs.forEach(paragraph => {
+    paragraph.setAttribute('data-original-text', paragraph.innerText);
   });
 });
