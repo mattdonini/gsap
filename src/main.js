@@ -138,16 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isAnimating) return; // Prevent new animations if already animating
       isAnimating = true;
 
-      if (currentTimeline) {
-        currentTimeline.kill(); // Stop the current timeline
-        resetVisibility(); // Reset the visibility of elements
-      }
-
       const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
       if (targetEyebrow && targetH3) {
+        // Reset visibility of all elements
+        resetVisibility();
+
         // Create a timeline to sequence the slide out and slide in animations
         currentTimeline = gsap.timeline({
           onComplete: () => {
