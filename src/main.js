@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setText(newText) {
-      this.el.style.visibility = 'visible';  // Ensure the element is visible
       const oldText = this.el.innerText;
       const length = Math.max(oldText.length, newText.length);
       const promise = new Promise((resolve) => (this.resolve = resolve));
@@ -107,8 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
+        // Ensure the new target is visible before starting the scramble effect
+        gsap.set(target, { opacity: 1, y: '0%', visibility: 'visible' });
+
         // Show the new target element with scramble effect
-        scrambleText(target, newText);
+        scrambleText(target, newText).then(() => {
+          gsap.set(target, { opacity: 1, y: '0%', visibility: 'visible' });
+        });
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -163,9 +167,17 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
+        // Ensure the new targets are visible before starting the scramble effect
+        gsap.set(targetHeading, { opacity: 1, y: '0%', visibility: 'visible' });
+        gsap.set(targetParagraph, { opacity: 1, y: '0%', visibility: 'visible' });
+
         // Show the new target heading and paragraph with scramble effect
-        scrambleText(targetHeading, headingText);
-        scrambleText(targetParagraph, paragraphText);
+        scrambleText(targetHeading, headingText).then(() => {
+          gsap.set(targetHeading, { opacity: 1, y: '0%', visibility: 'visible' });
+        });
+        scrambleText(targetParagraph, paragraphText).then(() => {
+          gsap.set(targetParagraph, { opacity: 1, y: '0%', visibility: 'visible' });
+        });
       } else {
         console.error(`No matching elements found with data-garment-id="${garmentId}"`);
       }
