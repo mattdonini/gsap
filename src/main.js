@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       defaultTarget.style.visibility = 'visible';
-      applyScrambleEffectThreads(defaultTarget.parentNode, 30); // Set duration for threads here
+      applyScrambleEffectThreads(defaultTarget.parentNode, 10); // Set duration for threads here
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Scramble in the new target element
         target.style.visibility = 'visible';
-        applyScrambleEffectThreads(target.parentNode, 30); // Set duration for threads here
+        applyScrambleEffectThreads(target.parentNode, 10); // Set duration for threads here
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -183,8 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      garmentScrambleIn(defaultHeading, 60); // Set duration for garments here
-      garmentScrambleIn(defaultParagraph, 60); // Set duration for garments here
+      garmentScrambleIn(defaultHeading, 10); // Set duration for garments here
+      garmentScrambleIn(defaultParagraph, 10); // Set duration for garments here
     }
   }
 
@@ -215,8 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        garmentScrambleIn(targetHeading, 60); // Set duration for garments here
-        garmentScrambleIn(targetParagraph, 60); // Set duration for garments here
+        garmentScrambleIn(targetHeading, 10); // Set duration for garments here
+        garmentScrambleIn(targetParagraph, 10); // Set duration for garments here
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
