@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hide all title_wrap elements initially and set them above the viewport
   titles.forEach(item => {
     const titleWrap = item.querySelector('.title_wrap');
-    gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    gsap.set(titleWrap, { y: '-100%', visibility: 'hidden' });
   });
 
   // Select the first trigger's corresponding content by default
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
-      gsap.set(defaultTarget, { opacity: 1, y: '0%', visibility: 'visible' });
+      gsap.set(defaultTarget, { y: '0%', visibility: 'visible' });
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
         titles.forEach(item => {
           const titleWrap = item.querySelector('.title_wrap');
           if (titleWrap.style.visibility === 'visible') {
-            gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
+            gsap.set(titleWrap, { y: '-100%', visibility: 'hidden' });
           }
         });
 
         // Show the new target element
-        gsap.set(target, { opacity: 1, y: '0%', visibility: 'visible' });
+        gsap.set(target, { y: '0%', visibility: 'visible' });
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -66,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Hide all headings and paragraphs initially
   headings.forEach(heading => {
-    gsap.set(heading, { opacity: 0, visibility: 'hidden', y: '-100%' });
+    gsap.set(heading, { visibility: 'hidden', y: '-100%' });
   });
 
   paragraphs.forEach(paragraph => {
-    gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
+    gsap.set(paragraph, { visibility: 'hidden', y: '-100%' });
     Splitting({ target: paragraph, by: 'lines' });
   });
 
@@ -83,8 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Heading:", defaultHeading);    // Debug output
     console.log("Default Paragraph:", defaultParagraph);  // Debug output
     if (defaultHeading && defaultParagraph) {
-      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible', y: '0%' });
-      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible', y: '0%' });
+      gsap.set(defaultHeading, { visibility: 'visible', y: '0%' });
+      gsap.set(defaultParagraph, { visibility: 'visible', y: '0%' });
     }
   }
 
