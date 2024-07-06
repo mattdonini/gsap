@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < length; i++) {
         const from = oldText[i] || '';
         const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 20);
-        const end = start + Math.floor(Math.random() * 20);
+        const start = Math.floor(Math.random() * 40);
+        const end = start + Math.floor(Math.random() * 40);
         this.queue.push({ from, to, start, end });
       }
       cancelAnimationFrame(this.frameRequest);
@@ -99,22 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const newText = target.innerText;
 
         // Hide all current visible elements
-        titles.forEach(item => {
+        const hidePromises = Array.from(titles).map(item => {
           const titleWrap = item.querySelector('.title_wrap');
           if (titleWrap.style.visibility === 'visible') {
-            gsap.to(titleWrap, { opacity: 0, y: '100%', duration: threadsDuration, onComplete: () => {
-              titleWrap.style.visibility = 'hidden';
-              titleWrap.innerText = ''; // Clear old text
-            }});
+            return gsap.to(titleWrap, { opacity: 0, y: '100%', duration: threadsDuration, visibility: 'hidden' }).then();
           }
         });
 
-        // Ensure the new target is visible before starting the scramble effect
-        gsap.set(target, { opacity: 1, y: '0%', visibility: 'visible' });
-
-        // Show the new target element with scramble effect
-        scrambleText(target, newText).then(() => {
+        Promise.all(hidePromises).then(() => {
+          // Ensure the new target is visible before starting the scramble effect
           gsap.set(target, { opacity: 1, y: '0%', visibility: 'visible' });
+
+          // Show the new target element with scramble effect
+          scrambleText(target, newText);
         });
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
@@ -158,34 +155,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const paragraphText = targetParagraph.innerText;
 
         // Hide all current visible headings and paragraphs
-        headings.forEach(heading => {
+        const hideHeadingsPromises = Array.from(headings).map(heading => {
           if (heading.style.visibility === 'visible') {
-            gsap.to(heading, { opacity: 0, y: '100%', duration: garmentsDuration, onComplete: () => {
-              heading.style.visibility = 'hidden';
-              heading.innerText = ''; // Clear old text
-            }});
+            return gsap.to(heading, { opacity: 0, y: '100%', duration: garmentsDuration, visibility: 'hidden' }).then();
           }
         });
 
-        paragraphs.forEach(paragraph => {
+        const hideParagraphsPromises = Array.from(paragraphs).map(paragraph => {
           if (paragraph.style.visibility === 'visible') {
-            gsap.to(paragraph, { opacity: 0, y: '100%', duration: garmentsDuration, onComplete: () => {
-              paragraph.style.visibility = 'hidden';
-              paragraph.innerText = ''; // Clear old text
-            }});
+            return gsap.to(paragraph, { opacity: 0, y: '100%', duration: garmentsDuration, visibility: 'hidden' }).then();
           }
         });
 
-        // Ensure the new targets are visible before starting the scramble effect
-        gsap.set(targetHeading, { opacity: 1, y: '0%', visibility: 'visible' });
-        gsap.set(targetParagraph, { opacity: 1, y: '0%', visibility: 'visible' });
-
-        // Show the new target heading and paragraph with scramble effect
-        scrambleText(targetHeading, headingText).then(() => {
+        Promise.all([...hideHeadingsPromises, ...hideParagraphsPromises]).then(() => {
+          // Ensure the new targets are visible before starting the scramble effect
           gsap.set(targetHeading, { opacity: 1, y: '0%', visibility: 'visible' });
-        });
-        scrambleText(targetParagraph, paragraphText).then(() => {
           gsap.set(targetParagraph, { opacity: 1, y: '0%', visibility: 'visible' });
+
+          // Show the new target heading and paragraph with scramble effect
+          scrambleText(targetHeading, headingText);
+          scrambleText(targetParagraph, paragraphText);
         });
       } else {
         console.error(`No matching elements found with data-garment-id="${garmentId}"`);
