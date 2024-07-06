@@ -3,9 +3,6 @@ import { gsap } from "gsap";
 import Splitting from "splitting";
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Splitting
-  Splitting();
-
   // Easing function (easeOutExpo)
   const easeOutExpo = (t) => {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
@@ -89,28 +86,21 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
-  const slideIn = (eyebrow, h3) => {
-    gsap.killTweensOf([eyebrow, h3]);
+  const slideIn = (target) => {
+    gsap.killTweensOf(target);
+    const chars = target.querySelectorAll('.char');
     gsap.timeline()
-      .fromTo(eyebrow.querySelectorAll('.char'), 
-        { opacity: 0, y: '-100%' }, 
-        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0)
-      .fromTo(h3.querySelectorAll('.char'), 
-        { opacity: 0, y: '-100%' }, 
-        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 }, 0);
+      .fromTo(chars, 
+        { opacity: 0, y: '100%' }, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 });
   };
 
-  const slideOut = (eyebrow, h3) => {
-    gsap.killTweensOf([eyebrow, h3]);
+  const slideOut = (target) => {
+    gsap.killTweensOf(target);
+    const chars = target.querySelectorAll('.char');
     return gsap.timeline()
-      .to(eyebrow.querySelectorAll('.char'),
-        { opacity: 0, y: '100%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
-          eyebrow.style.visibility = 'hidden';
-        }}, 0)
-      .to(h3.querySelectorAll('.char'),
-        { opacity: 0, y: '100%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
-          h3.style.visibility = 'hidden';
-        }}, 0);
+      .to(chars, 
+        { opacity: 0, y: '-100%', duration: 0.6, ease: 'power2.in', stagger: 0.05 });
   };
 
   // Select the first trigger's corresponding content by default
@@ -118,7 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
     const defaultEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .is-eyebrow`);
     const defaultH3 = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
+    console.log("Default Target:", defaultEyebrow, defaultH3);  // Debug output
     if (defaultEyebrow && defaultH3) {
+      Splitting({ target: defaultEyebrow, by: 'chars' });
+      Splitting({ target: defaultH3, by: 'chars' });
       gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
       gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
@@ -141,12 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
           const eyebrow = item.querySelector('.is-eyebrow');
           const h3 = item.querySelector('.h-h3');
           if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
-            tl.add(slideOut(eyebrow, h3));
+            tl.add(slideOut(eyebrow));
+            tl.add(slideOut(h3), '-=0.5');
           }
         });
 
+        // Split text into characters for the new target elements
+        Splitting({ target: targetEyebrow, by: 'chars' });
+        Splitting({ target: targetH3, by: 'chars' });
+
         // Slide in the new target elements after the slide out is complete
-        tl.add(() => slideIn(targetEyebrow, targetH3));
+        tl.add(() => slideIn(targetEyebrow));
+        tl.add(() => slideIn(targetH3), '-=0.5');
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
@@ -177,23 +176,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
-    const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
+    const defaultHeading = document.querySelector(
+      `.h-h6.is-info[data-garment-id="${firstGarmentId}"]`
+    );
+    const defaultParagraph = document.querySelector(
+      `.paragraph.is-info[data-garment-id="${firstGarmentId}"]`
+    );
     if (defaultHeading && defaultParagraph) {
       defaultHeading.style.visibility = 'visible';
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      scrambleIn(defaultHeading, 20);
-      scrambleIn(defaultParagraph, 20);
+      scrambleIn(defaultHeading, 20); // Set duration for garments here
+      scrambleIn(defaultParagraph, 20); // Set duration for garments here
     }
   }
 
   garmentItems.forEach((item) => {
     item.addEventListener('click', () => {
       const garmentId = item.getAttribute('data-garment-id');
-      const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
-      const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
+      const targetHeading = document.querySelector(
+        `.h-h6.is-info[data-garment-id="${garmentId}"]`
+      );
+      const targetParagraph = document.querySelector(
+        `.paragraph.is-info[data-garment-id="${garmentId}"]`
+      );
 
       if (targetHeading && targetParagraph) {
         headings.forEach((heading) => {
@@ -212,10 +219,12 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        scrambleIn(targetHeading, 20);
-        scrambleIn(targetParagraph, 20);
+        scrambleIn(targetHeading, 20); // Set duration for garments here
+        scrambleIn(targetParagraph, 20); // Set duration for garments here
       } else {
-        console.error(`No matching heading or paragraph found with data-garment-id="${garmentId}"`);
+        console.error(
+          `No matching heading or paragraph found with data-garment-id="${garmentId}"`
+        );
       }
     });
   });
