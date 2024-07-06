@@ -2,11 +2,6 @@ import './styles/style.css';
 import { gsap } from "gsap";
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Easing function (easeOutExpo)
-  const easeOutExpo = (t) => {
-    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-  };
-
   // TextScramble class
   class TextScramble {
     constructor(el, speedFactor = 1) {
@@ -39,9 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let complete = 0;
       for (let i = 0, n = this.queue.length; i < n; i++) {
         let { from, to, start, end, char } = this.queue[i];
-        const progress = Math.min(Math.max((this.frame - start) / (end - start), 0), 1);
-        const easedProgress = easeOutExpo(progress);
-
         if (this.frame >= end) {
           complete++;
           output += to;
@@ -50,11 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             char = this.randomChar();
             this.queue[i].char = char;
           }
-          if (easedProgress < 1) {
-            output += `<span>${char}</span>`;
-          } else {
-            output += to;
-          }
+          output += `<span>${char}</span>`;
         } else {
           output += from;
         }
@@ -116,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       defaultTarget.style.visibility = 'visible';
-      applyScrambleEffectThreads(defaultTarget.parentNode, 2); // Adjust speed here for threads (lower is faster)
+      applyScrambleEffectThreads(defaultTarget.parentNode, 1); // Adjust speed here for threads (lower is faster)
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
