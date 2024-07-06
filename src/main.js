@@ -1,5 +1,7 @@
 import './styles/style.css';
 import { gsap } from "gsap";
+import Splitting from "splitting";
+import "splitting/dist/splitting.css"; // Ensure Splitting.js styles are included
 
 document.addEventListener('DOMContentLoaded', () => {
   // Easing function (easeOutExpo)
@@ -81,32 +83,32 @@ document.addEventListener('DOMContentLoaded', () => {
   titles.forEach(item => {
     const eyebrow = item.querySelector('.is-eyebrow');
     const h3 = item.querySelector('.h-h3');
-    gsap.set(eyebrow, { opacity: 0, y: '-100%', visibility: 'hidden' });
-    gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
+    gsap.set([eyebrow, h3], { opacity: 0, y: '-30%', visibility: 'hidden' });
   });
 
-  const slideIn = (eyebrow, h3) => {
-    gsap.killTweensOf([eyebrow, h3]);
-    gsap.timeline()
-      .fromTo(eyebrow, 
-        { opacity: 0, y: '-30%', visibility: 'visible' }, 
-        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0)
-      .fromTo(h3, 
-        { opacity: 0, y: '-30%', visibility: 'visible' }, 
-        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out' }, 0);
+  const splitText = (element) => {
+    if (element) {
+      Splitting({ target: element, by: 'chars' });
+    }
   };
 
-  const slideOut = (eyebrow, h3) => {
-    gsap.killTweensOf([eyebrow, h3]);
+  const slideIn = (element) => {
+    gsap.killTweensOf(element);
+    const chars = element.querySelectorAll('.char');
+    gsap.timeline()
+      .fromTo(chars, 
+        { opacity: 0, y: '30%' }, 
+        { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 });
+  };
+
+  const slideOut = (element) => {
+    gsap.killTweensOf(element);
+    const chars = element.querySelectorAll('.char');
     return gsap.timeline()
-      .to(eyebrow,
-        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
-          eyebrow.style.visibility = 'hidden';
-        }}, 0)
-      .to(h3,
-        { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', onComplete: () => {
-          h3.style.visibility = 'hidden';
-        }}, 0);
+      .to(chars, 
+        { opacity: 0, y: '-30%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
+          element.style.visibility = 'hidden';
+        }});
   };
 
   // Select the first trigger's corresponding content by default
@@ -116,8 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultH3 = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
     console.log("Default Target:", defaultEyebrow, defaultH3);  // Debug output
     if (defaultEyebrow && defaultH3) {
-      gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
-      gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
+      splitText(defaultEyebrow);
+      splitText(defaultH3);
+      gsap.set([defaultEyebrow, defaultH3], { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -138,12 +141,18 @@ document.addEventListener('DOMContentLoaded', () => {
           const eyebrow = item.querySelector('.is-eyebrow');
           const h3 = item.querySelector('.h-h3');
           if (eyebrow.style.visibility === 'visible' && h3.style.visibility === 'visible') {
-            tl.add(slideOut(eyebrow, h3));
+            tl.add(slideOut(eyebrow));
+            tl.add(slideOut(h3), '-=0.5');
           }
         });
 
+        // Split text into characters for the new target elements
+        splitText(targetEyebrow);
+        splitText(targetH3);
+
         // Slide in the new target elements after the slide out is complete
-        tl.add(() => slideIn(targetEyebrow, targetH3));
+        tl.add(() => slideIn(targetEyebrow));
+        tl.add(() => slideIn(targetH3), '-=0.5');
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
       }
