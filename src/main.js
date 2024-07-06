@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hide all title_wrap elements initially and set them above the viewport
   titles.forEach(item => {
     const titleWrap = item.querySelector('.title_wrap');
-    gsap.set(titleWrap, { opacity: 0, visibility: 'hidden' });
+    gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
   // Initialize the text scramble class
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
     const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
     if (defaultTarget) {
-      gsap.set(defaultTarget, { opacity: 1, visibility: 'visible' });
+      gsap.set(defaultTarget, { opacity: 1, y: '0%', visibility: 'visible' });
     }
   }
 
@@ -102,13 +102,13 @@ document.addEventListener('DOMContentLoaded', () => {
         titles.forEach(item => {
           const titleWrap = item.querySelector('.title_wrap');
           if (titleWrap.style.visibility === 'visible') {
-            gsap.set(titleWrap, { opacity: 0, visibility: 'hidden' });
+            gsap.set(titleWrap, { opacity: 0, y: '-100%', visibility: 'hidden' });
           }
         });
 
         // Show the new target element with scramble effect
         scrambleText(target, newText).then(() => {
-          gsap.set(target, { opacity: 1, visibility: 'visible' });
+          gsap.set(target, { opacity: 1, y: '0%', visibility: 'visible' });
         });
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
@@ -123,11 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Hide all headings and paragraphs initially
   headings.forEach(heading => {
-    gsap.set(heading, { opacity: 0, visibility: 'hidden' });
+    gsap.set(heading, { opacity: 0, visibility: 'hidden', y: '-100%' });
   });
 
   paragraphs.forEach(paragraph => {
-    gsap.set(paragraph, { opacity: 0, visibility: 'hidden' });
+    gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
   });
 
   // Show the first heading and paragraph by default
@@ -136,8 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
     const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
     if (defaultHeading && defaultParagraph) {
-      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible' });
-      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible' });
+      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible', y: '0%' });
+      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible', y: '0%' });
     }
   }
 
@@ -154,22 +154,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide all current visible headings and paragraphs
         headings.forEach(heading => {
           if (heading.style.visibility === 'visible') {
-            gsap.set(heading, { opacity: 0, visibility: 'hidden' });
+            gsap.set(heading, { opacity: 0, y: '100%', visibility: 'hidden' });
           }
         });
 
         paragraphs.forEach(paragraph => {
           if (paragraph.style.visibility === 'visible') {
-            gsap.set(paragraph, { opacity: 0, visibility: 'hidden' });
+            gsap.set(paragraph, { opacity: 0, y: '100%', visibility: 'hidden' });
           }
         });
 
         // Show the new target heading and paragraph with scramble effect
         scrambleText(targetHeading, headingText).then(() => {
-          gsap.set(targetHeading, { opacity: 1, visibility: 'visible' });
+          gsap.set(targetHeading, { opacity: 1, y: '0%', visibility: 'visible' });
         });
         scrambleText(targetParagraph, paragraphText).then(() => {
-          gsap.set(targetParagraph, { opacity: 1, visibility: 'visible' });
+          gsap.set(targetParagraph, { opacity: 1, y: '0%', visibility: 'visible' });
         });
       } else {
         console.error(`No matching elements found with data-garment-id="${garmentId}"`);
