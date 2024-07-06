@@ -1,9 +1,5 @@
 import './styles/style.css';
 import { gsap } from "gsap";
-import Splitting from "splitting";
-
-// Initialize Splitting.js
-Splitting();
 
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
@@ -89,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   paragraphs.forEach(paragraph => {
     gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
-    Splitting({ target: paragraph, by: 'lines' });
   });
 
   // Show the first heading and paragraph by default
@@ -107,18 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const showContent = (target) => {
-    const lines = target.querySelectorAll('.line');
     gsap.killTweensOf(target);
-    gsap.fromTo(lines, 
+    gsap.fromTo(target, 
       { opacity: 0, y: '-100%', visibility: 'visible' }, 
-      { opacity: 1, y: '0%', duration: garmentsDuration, ease: 'power2.out', stagger: 0.1 });
+      { opacity: 1, y: '0%', duration: garmentsDuration, ease: 'power2.out' });
   };
 
   const hideContent = (target) => {
-    const lines = target.querySelectorAll('.line');
     gsap.killTweensOf(target);
-    return gsap.to(lines, 
-      { opacity: 0, y: '100%', duration: garmentsDuration, ease: 'power2.in', stagger: 0.1, onComplete: () => {
+    return gsap.to(target, 
+      { opacity: 0, y: '100%', duration: garmentsDuration, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
