@@ -2,8 +2,6 @@ import './styles/style.css';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Configurable variables for animation timing
-  const threadsDuration = 0.2; // Duration of the hide and show animations for threads
-  const garmentsDuration = 0.4; // Duration of the hide and show animations for garments
   const garmentsOverlap = 0.1; // Overlap time for synchronization for garments
 
   // TextScramble class
@@ -83,23 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
     target.style.visibility = 'hidden';
   };
 
-  // Select the first trigger's corresponding content by default
-  if (triggers.length > 0) {
-    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    const defaultTarget = document.querySelector(
-      `.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`
-    );
-    if (defaultTarget) {
-      defaultTarget.style.visibility = 'visible';
-      defaultTarget.dataset.text = defaultTarget.innerText;
-      scrambleIn(defaultTarget);
-    } else {
-      console.error(
-        `No matching target found with data-threads-id="${firstTriggerId}"`
-      );
-    }
-  }
-
   triggers.forEach((trigger) => {
     trigger.addEventListener('click', () => {
       const id = trigger.getAttribute('data-threads-id');
@@ -108,8 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       if (target) {
-        const tl = gsap.timeline();
-
         titles.forEach((item) => {
           const titleWrap = item.querySelector('.title_wrap');
           if (titleWrap.style.visibility === 'visible') {
@@ -119,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         target.style.visibility = 'visible';
         target.dataset.text = target.innerText;
-        tl.add(() => scrambleIn(target));
+        scrambleIn(target);
       } else {
         console.error(
           `No matching target found with data-threads-id="${id}"`
@@ -141,24 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
     paragraph.style.visibility = 'hidden';
   });
 
-  if (garmentItems.length > 0) {
-    const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(
-      `.h-h6.is-info[data-garment-id="${firstGarmentId}"]`
-    );
-    const defaultParagraph = document.querySelector(
-      `.paragraph.is-info[data-garment-id="${firstGarmentId}"]`
-    );
-    if (defaultHeading && defaultParagraph) {
-      defaultHeading.style.visibility = 'visible';
-      defaultHeading.dataset.text = defaultHeading.innerText;
-      defaultParagraph.style.visibility = 'visible';
-      defaultParagraph.dataset.text = defaultParagraph.innerText;
-      scrambleIn(defaultHeading);
-      scrambleIn(defaultParagraph);
-    }
-  }
-
   garmentItems.forEach((item) => {
     item.addEventListener('click', () => {
       const garmentId = item.getAttribute('data-garment-id');
@@ -170,8 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       if (targetHeading && targetParagraph) {
-        const tl = gsap.timeline();
-
         headings.forEach((heading) => {
           if (heading.style.visibility === 'visible') {
             scrambleOut(heading);
@@ -188,8 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        tl.add(() => scrambleIn(targetHeading), `-=${garmentsOverlap}`);
-        tl.add(() => scrambleIn(targetParagraph), `-=${garmentsOverlap}`);
+        scrambleIn(targetHeading);
+        scrambleIn(targetParagraph);
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
