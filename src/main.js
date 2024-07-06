@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const slideIn = (element) => {
     gsap.killTweensOf(element);
     const chars = element.querySelectorAll('.char');
-    gsap.timeline()
+    return gsap.timeline()
       .fromTo(chars, 
         { opacity: 0, y: '30%' }, 
         { opacity: 1, y: '0%', duration: 0.6, ease: 'power2.out', stagger: 0.05 });
