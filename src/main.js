@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < length; i++) {
         const from = oldText[i] || '';
         const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 10 * this.speedFactor);
+        const start = Math.floor(Math.random() * 100 * this.speedFactor);
         const end = start + Math.floor(Math.random() * 20 * this.speedFactor);
         this.queue.push({ from, to, start, end });
       }
