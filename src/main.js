@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fx = new TextScramble(el);
     return fx.setText(newText).then(() => {
       el.innerText = newText; // Ensure the final text is set
-      gsap.set(el, { opacity: 1, visibility: 'visible' }); // Ensure visibility
     });
   };
 
