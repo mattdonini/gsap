@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < length; i++) {
         const from = oldText[i] || '';
         const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 100 * this.speedFactor);
+        const start = Math.floor(Math.random() * 10 * this.speedFactor);
         const end = start + Math.floor(Math.random() * 20 * this.speedFactor);
         this.queue.push({ from, to, start, end });
       }
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       defaultTarget.style.visibility = 'visible';
-      applyScrambleEffectThreads(defaultTarget.parentNode, 0.5); // Adjust speed here for threads (lower is faster)
+      applyScrambleEffectThreads(defaultTarget.parentNode, 1); // Adjust speed here for threads (lower is faster)
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
