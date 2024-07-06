@@ -140,6 +140,15 @@ document.addEventListener('DOMContentLoaded', () => {
     paragraph.style.visibility = 'hidden';
   });
 
+  const scrambleIn = (target) => {
+    const textScramble = new TextScramble(target);
+    return textScramble.setText(target.dataset.text);
+  };
+
+  const scrambleOut = (target) => {
+    target.style.visibility = 'hidden';
+  };
+
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
     const defaultHeading = document.querySelector(
@@ -158,15 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const scrambleIn = (target) => {
-    const textScramble = new TextScramble(target);
-    return textScramble.setText(target.dataset.text);
-  };
-
-  const scrambleOut = (target) => {
-    target.style.visibility = 'hidden';
-  };
-
   garmentItems.forEach((item) => {
     item.addEventListener('click', () => {
       const garmentId = item.getAttribute('data-garment-id');
@@ -178,6 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       if (targetHeading && targetParagraph) {
+        const tl = gsap.timeline();
+
         headings.forEach((heading) => {
           if (heading.style.visibility === 'visible') {
             scrambleOut(heading);
@@ -190,12 +192,17 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        targetHeading.style.visibility = 'visible';
-        targetHeading.dataset.text = targetHeading.innerText;
-        targetParagraph.style.visibility = 'visible';
-        targetParagraph.dataset.text = targetParagraph.innerText;
-        scrambleIn(targetHeading);
-        scrambleIn(targetParagraph);
+        tl.add(() => {
+          targetHeading.style.visibility = 'visible';
+          targetHeading.dataset.text = targetHeading.innerText;
+          scrambleIn(targetHeading);
+        }, `-=${garmentsOverlap}`);
+
+        tl.add(() => {
+          targetParagraph.style.visibility = 'visible';
+          targetParagraph.dataset.text = targetParagraph.innerText;
+          scrambleIn(targetParagraph);
+        }, `-=${garmentsOverlap}`);
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
