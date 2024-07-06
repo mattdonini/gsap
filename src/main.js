@@ -78,7 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to handle the scrambling effect
   const scrambleText = (el, newText) => {
     const fx = new TextScramble(el);
-    return fx.setText(newText);
+    return fx.setText(newText).then(() => {
+      // Ensure the final text is fully displayed without any scramble characters
+      el.innerText = newText;
+    });
   };
 
   // Select the first trigger's corresponding content by default
