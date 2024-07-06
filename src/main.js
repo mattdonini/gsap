@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       defaultTarget.style.visibility = 'visible';
-      applyScrambleEffectThreads(defaultTarget.parentNode, { min: 2, max: 3 }); // Adjust speed here for threads
+      applyScrambleEffectThreads(defaultTarget.parentNode, { min: 3, max: 5 }); // Adjust speed here for threads
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
