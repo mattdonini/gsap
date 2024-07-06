@@ -132,76 +132,65 @@ document.addEventListener('DOMContentLoaded', () => {
   const headings = document.querySelectorAll('.h-h6.is-info');
   const paragraphs = document.querySelectorAll('.paragraph.is-info');
 
-  console.log('garmentItems:', garmentItems);
-  console.log('headings:', headings);
-  console.log('paragraphs:', paragraphs);
-
-  // Hide all headings and paragraphs initially
-  headings.forEach(heading => {
-    gsap.set(heading, { opacity: 0, visibility: 'hidden', y: '-100%' });
+  headings.forEach((heading) => {
+    heading.style.visibility = 'hidden';
   });
 
-  paragraphs.forEach(paragraph => {
-    gsap.set(paragraph, { opacity: 0, visibility: 'hidden', y: '-100%' });
+  paragraphs.forEach((paragraph) => {
+    paragraph.style.visibility = 'hidden';
   });
 
-  // Show the first heading and paragraph by default
   if (garmentItems.length > 0) {
     const firstGarmentId = garmentItems[0].getAttribute('data-garment-id');
-    const defaultHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${firstGarmentId}"]`);
-    const defaultParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${firstGarmentId}"]`);
-    console.log("Default Garment ID:", firstGarmentId);  // Debug output
-    console.log("Default Heading:", defaultHeading);    // Debug output
-    console.log("Default Paragraph:", defaultParagraph);  // Debug output
+    const defaultHeading = document.querySelector(
+      `.h-h6.is-info[data-garment-id="${firstGarmentId}"]`
+    );
+    const defaultParagraph = document.querySelector(
+      `.paragraph.is-info[data-garment-id="${firstGarmentId}"]`
+    );
     if (defaultHeading && defaultParagraph) {
-      gsap.set(defaultHeading, { opacity: 1, visibility: 'visible', y: '0%' });
-      gsap.set(defaultParagraph, { opacity: 1, visibility: 'visible', y: '0%' });
+      defaultHeading.style.visibility = 'visible';
+      defaultHeading.dataset.text = defaultHeading.innerText;
+      defaultParagraph.style.visibility = 'visible';
+      defaultParagraph.dataset.text = defaultParagraph.innerText;
+      scrambleIn(defaultHeading);
+      scrambleIn(defaultParagraph);
     }
   }
 
-  const scrambleIn = (target) => {
-    const textScramble = new TextScramble(target);
-    return textScramble.setText(target.dataset.text);
-  };
-
-  const scrambleOut = (target) => {
-    target.style.visibility = 'hidden';
-  };
-
-  garmentItems.forEach(item => {
+  garmentItems.forEach((item) => {
     item.addEventListener('click', () => {
       const garmentId = item.getAttribute('data-garment-id');
-      console.log(`Clicked Garment Item with ID: ${garmentId}`);
-
-      // Create a timeline to sequence the hide and show animations
-      const tl = gsap.timeline();
-
-      // Hide all headings and paragraphs
-      headings.forEach(heading => {
-        if (heading.style.visibility === 'visible') {
-          scrambleOut(heading);
-        }
-      });
-
-      paragraphs.forEach(paragraph => {
-        if (paragraph.style.visibility === 'visible') {
-          scrambleOut(paragraph);
-        }
-      });
-
-      // Show the corresponding heading and paragraph
-      const targetHeading = document.querySelector(`.h-h6.is-info[data-garment-id="${garmentId}"]`);
-      const targetParagraph = document.querySelector(`.paragraph.is-info[data-garment-id="${garmentId}"]`);
+      const targetHeading = document.querySelector(
+        `.h-h6.is-info[data-garment-id="${garmentId}"]`
+      );
+      const targetParagraph = document.querySelector(
+        `.paragraph.is-info[data-garment-id="${garmentId}"]`
+      );
 
       if (targetHeading && targetParagraph) {
+        headings.forEach((heading) => {
+          if (heading.style.visibility === 'visible') {
+            scrambleOut(heading);
+          }
+        });
+
+        paragraphs.forEach((paragraph) => {
+          if (paragraph.style.visibility === 'visible') {
+            scrambleOut(paragraph);
+          }
+        });
+
         targetHeading.style.visibility = 'visible';
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        tl.add(() => scrambleIn(targetHeading), `-=${garmentsOverlap}`);
-        tl.add(() => scrambleIn(targetParagraph), `-=${garmentsOverlap}`);
+        scrambleIn(targetHeading);
+        scrambleIn(targetParagraph);
       } else {
-        console.error(`No matching heading or paragraph found with data-garment-id="${garmentId}"`);
+        console.error(
+          `No matching heading or paragraph found with data-garment-id="${garmentId}"`
+        );
       }
     });
   });
