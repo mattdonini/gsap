@@ -110,10 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
       .to(eyebrow.querySelectorAll('.letter'),
         { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
           eyebrow.style.visibility = 'hidden';
+          eyebrow.querySelectorAll('.letter').forEach(letter => letter.style.visibility = 'hidden');
         }}, 0)
       .to(h3.querySelectorAll('.letter'),
         { opacity: 0, y: '30%', duration: 0.6, ease: 'power2.in', stagger: 0.05, onComplete: () => {
           h3.style.visibility = 'hidden';
+          h3.querySelectorAll('.letter').forEach(letter => letter.style.visibility = 'hidden');
         }}, 0);
   };
 
