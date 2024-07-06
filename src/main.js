@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
     const defaultTarget = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .title_wrap`);
+    console.log("Default Target:", defaultTarget);  // Debug output
     if (defaultTarget) {
       gsap.set(defaultTarget.querySelectorAll('span'), { opacity: 1, y: '0%', visibility: 'visible' });
     } else {
