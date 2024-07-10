@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isAnimating = false; // To track animation state
   let currentTimeline = null; // To track the current timeline
   let visibleElements = { eyebrow: null, h3: null }; // To track the currently visible elements
+  let selectedTrigger = null; // To track the currently selected trigger
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -128,6 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
+      const id = trigger.getAttribute('data-threads-id');
+
+      // Check if the clicked trigger is already selected
+      if (selectedTrigger === trigger) {
+        return; // Do nothing if the clicked trigger is already selected
+      }
+
       if (isAnimating) {
         if (currentTimeline) {
           currentTimeline.kill(); // Kill the current timeline if it exists and is playing
@@ -141,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       isAnimating = true;
 
-      const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
@@ -151,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
           onComplete: () => {
             isAnimating = false; // Reset animation state after completion
             visibleElements = { eyebrow: targetEyebrow, h3: targetH3 };
+            selectedTrigger = trigger; // Update the selected trigger
           }
         });
 
