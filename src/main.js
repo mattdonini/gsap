@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let isAnimating = false; // To track animation state
   let currentTimeline = null; // To track the current timeline
   let visibleElements = { eyebrow: null, h3: null }; // To track the currently visible elements
-  let selectedTrigger = null; // To track the currently selected trigger
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -122,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
       gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
       visibleElements = { eyebrow: defaultEyebrow, h3: defaultH3 };
+      defaultEyebrow.classList.add('selected'); // Add selected class to the default trigger
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
@@ -129,10 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
-      const id = trigger.getAttribute('data-threads-id');
-
       // Check if the clicked trigger is already selected
-      if (selectedTrigger === trigger) {
+      if (trigger.classList.contains('selected')) {
         return; // Do nothing if the clicked trigger is already selected
       }
 
@@ -149,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       isAnimating = true;
 
+      const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
@@ -158,7 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
           onComplete: () => {
             isAnimating = false; // Reset animation state after completion
             visibleElements = { eyebrow: targetEyebrow, h3: targetH3 };
-            selectedTrigger = trigger; // Update the selected trigger
+            // Update the selected trigger
+            document.querySelectorAll('.threads_trigger-item.selected').forEach(item => item.classList.remove('selected'));
+            trigger.classList.add('selected');
           }
         });
 
