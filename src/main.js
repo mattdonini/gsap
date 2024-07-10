@@ -126,10 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let selectedTrigger = null; // To track the currently selected trigger
+
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       // Check if the clicked trigger is already selected
-      if (trigger.classList.contains('selected')) {
+      if (trigger === selectedTrigger) {
         return; // Do nothing if the clicked trigger is already selected
       }
 
@@ -157,8 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
             isAnimating = false; // Reset animation state after completion
             visibleElements = { eyebrow: targetEyebrow, h3: targetH3 };
             // Update the selected trigger
-            document.querySelectorAll('.threads_trigger-item.selected').forEach(item => item.classList.remove('selected'));
+            if (selectedTrigger) {
+              selectedTrigger.classList.remove('selected');
+            }
             trigger.classList.add('selected');
+            selectedTrigger = trigger; // Update the selected trigger
           }
         });
 
