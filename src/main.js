@@ -126,15 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  let selectedTrigger = null; // To track the currently selected trigger
-
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
-      // Check if the clicked trigger is already selected
-      if (trigger === selectedTrigger) {
-        return; // Do nothing if the clicked trigger is already selected
-      }
-
       if (isAnimating) {
         if (currentTimeline) {
           currentTimeline.kill(); // Kill the current timeline if it exists and is playing
@@ -158,12 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
           onComplete: () => {
             isAnimating = false; // Reset animation state after completion
             visibleElements = { eyebrow: targetEyebrow, h3: targetH3 };
-            // Update the selected trigger
-            if (selectedTrigger) {
-              selectedTrigger.classList.remove('selected');
-            }
-            trigger.classList.add('selected');
-            selectedTrigger = trigger; // Update the selected trigger
           }
         });
 
