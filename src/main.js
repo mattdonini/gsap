@@ -121,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
       gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
       visibleElements = { eyebrow: defaultEyebrow, h3: defaultH3 };
-      defaultEyebrow.classList.add('selected'); // Add selected class to the default trigger
     } else {
       console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
