@@ -113,16 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
-    const firstTriggerId = triggers[0].getAttribute('data-custom-threads-id');
-    const defaultEyebrow = document.querySelector(`.threads_title-item[data-custom-threads-id="${firstTriggerId}"] .is-eyebrow`);
-    const defaultH3 = document.querySelector(`.threads_title-item[data-custom-threads-id="${firstTriggerId}"] .h-h3`);
+    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
+    const defaultEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .is-eyebrow`);
+    const defaultH3 = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
     console.log("Default Target:", defaultEyebrow, defaultH3);  // Debug output
     if (defaultEyebrow && defaultH3) {
       gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
       gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
       visibleElements = { eyebrow: defaultEyebrow, h3: defaultH3 };
     } else {
-      console.error(`No matching target found with data-custom-threads-id="${firstTriggerId}"`);
+      console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
     }
   }
 
@@ -141,10 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       isAnimating = true;
 
-      const id = trigger.getAttribute('data-custom-threads-id');
-      const targetEyebrow = document.querySelector(`.threads_title-item[data-custom-threads-id="${id}"] .is-eyebrow`);
-      const targetH3 = document.querySelector(`.threads_title-item[data-custom-threads-id="${id}"] .h-h3`);
-      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-custom-threads-id="${id}"]`);
+      const id = trigger.getAttribute('data-threads-id');
+      const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
+      const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
+      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${id}"]`);
 
       if (targetEyebrow && targetH3) {
         // Create a timeline to sequence the slide out and slide in animations
@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
       } else {
-        console.error(`No matching target found with data-custom-threads-id="${id}"`);
+        console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
       }
 
@@ -178,13 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fade in the target touchpoint
         currentTimeline.add(() => fadeIn(targetTouchpoint), '+=0.1'); // Add slight delay to ensure fadeOut completes
       } else {
-        console.error(`No matching touchpoint found with data-custom-threads-id="${id}"`);
+        console.error(`No matching touchpoint found with data-threads-id="${id}"`);
       }
-
-      // Ensure images with class .img.is-garment are visible
-      document.querySelectorAll('.img.is-garment').forEach(img => {
-        img.style.display = 'block';
-      });
     });
   });
 
@@ -213,8 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Show the first touchpoint by default
   if (triggers.length > 0) {
-    const firstTriggerId = triggers[0].getAttribute('data-custom-threads-id');
-    const defaultTouchpoint = document.querySelector(`.touchpoint_wrap[data-custom-threads-id="${firstTriggerId}"]`);
+    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
+    const defaultTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${firstTriggerId}"]`);
     if (defaultTouchpoint) {
       gsap.set(defaultTouchpoint, { opacity: 1, visibility: 'visible' });
     }
