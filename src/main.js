@@ -244,4 +244,50 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  const touchpoints = {
+    holographic: document.querySelector('.touchpoint_wrap.is-holographic'),
+    prism: document.querySelector('.touchpoint_wrap.is-prism'),
+    metallic: document.querySelector('.touchpoint_wrap.is-metallic')
+  };
+
+  const showTouchpoint = (type) => {
+    Object.keys(touchpoints).forEach(key => {
+      if (key === type) {
+        gsap.fromTo(touchpoints[key], 
+          { opacity: 0 }, 
+          { opacity: 1, duration: 0.5, ease: 'power2.out' }
+        );
+      } else {
+        gsap.set(touchpoints[key], { opacity: 0 });
+      }
+    });
+  };
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const id = trigger.getAttribute('data-threads-id');
+      const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
+      const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
+
+      if (targetEyebrow && targetH3) {
+        // Determine which touchpoint to show based on the clicked thread item
+        let touchpointType;
+        if (id === 'holographic') {
+          touchpointType = 'holographic';
+        } else if (id === 'prism') {
+          touchpointType = 'prism';
+        } else if (id === 'metallic') {
+          touchpointType = 'metallic';
+        }
+
+        if (touchpointType) {
+          showTouchpoint(touchpointType);
+        }
+      } else {
+        console.error(`No matching target found with data-threads-id="${id}"`);
+        isAnimating = false; // Reset animation state if no matching target found
+      }
+    });
+  });
 });
