@@ -168,35 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (targetTouchpoint) {
-        // Fade out all touchpoints
-        touchpoints.forEach(touchpoint => {
-          if (touchpoint !== targetTouchpoint) {
-            fadeOut(touchpoint);
-          }
-        });
-
-        // Fade in the target touchpoint
-        currentTimeline.add(() => fadeIn(targetTouchpoint), '+=0.1'); // Add slight delay to ensure fadeOut completes
+        // Show the target touchpoint
+        gsap.set(targetTouchpoint, { opacity: 1, visibility: 'visible' });
       } else {
         console.error(`No matching touchpoint found with data-threads-id="${id}"`);
       }
     });
   });
-
-  // Function to fade in a target element
-  const fadeIn = (target) => {
-    return gsap.fromTo(target, 
-      { opacity: 0, visibility: 'visible' }, 
-      { opacity: 1, duration: 0.5, ease: 'power2.out' });
-  };
-
-  // Function to fade out a target element
-  const fadeOut = (target) => {
-    return gsap.to(target, 
-      { opacity: 0, duration: 0.5, ease: 'power2.in', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
-  };
 
   // Select all touchpoint_wrap elements
   const touchpoints = document.querySelectorAll('.touchpoint_wrap.is-holographic, .touchpoint_wrap.is-prism, .touchpoint_wrap.is-metallic');
