@@ -180,6 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         console.error(`No matching touchpoint found with data-threads-id="${id}"`);
       }
+
+      // Ensure images with class .img.is-garment are visible
+      document.querySelectorAll('.img.is-garment').forEach(img => {
+        img.style.display = 'block';
+      });
     });
   });
 
