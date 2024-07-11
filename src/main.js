@@ -132,6 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
     metallic: document.querySelector('.touchpoint_wrap.is-metallic')
   };
 
+  // Initially hide all touchpoints
+  Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
+
   const showTouchpoint = (id) => {
     // Hide all touchpoints
     Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
@@ -179,9 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
-
-        // Hide all touchpoints
-        Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
 
         // Show the corresponding touchpoint
         showTouchpoint(id);
