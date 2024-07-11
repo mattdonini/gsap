@@ -144,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
-      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${id}"]`);
 
       if (targetEyebrow && targetH3) {
         // Create a timeline to sequence the slide out and slide in animations
@@ -165,20 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
-      }
-
-      if (targetTouchpoint) {
-        // Fade out all touchpoints except the target one
-        touchpoints.forEach(touchpoint => {
-          if (touchpoint !== targetTouchpoint) {
-            fadeOut(touchpoint);
-          }
-        });
-
-        // Fade in the target touchpoint
-        currentTimeline.add(() => fadeIn(targetTouchpoint), '+=0.1'); // Add slight delay to ensure fadeOut completes
-      } else {
-        console.error(`No matching touchpoint found with data-threads-id="${id}"`);
       }
     });
   });
@@ -214,6 +199,63 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.set(defaultTouchpoint, { opacity: 1, visibility: 'visible' });
     }
   }
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      if (isAnimating) {
+        if (currentTimeline) {
+          currentTimeline.kill(); // Kill the current timeline if it exists and is playing
+        }
+        if (visibleElements.eyebrow && visibleElements.h3) {
+          // Immediately hide the currently visible elements
+          gsap.set(visibleElements.eyebrow, { opacity: 0, y: '100%', visibility: 'hidden' });
+          gsap.set(visibleElements.h3, { opacity: 0, y: '100%', visibility: 'hidden' });
+        }
+      }
+
+      isAnimating = true;
+
+      const id = trigger.getAttribute('data-threads-id');
+      const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
+      const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
+      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${id}"]`);
+
+      if (targetEyebrow && targetH3) {
+        // Create a timeline to sequence the slide out and slide in animations
+        currentTimeline = gsap.timeline({
+          onComplete: () => {
+            isAnimating = false; // Reset animation state after completion
+            visibleElements = { eyebrow: targetEyebrow, h3: targetH3 };
+          }
+        });
+
+        // Slide out currently visible elements
+        if (visibleElements.eyebrow && visibleElements.h3) {
+          currentTimeline.add(slideOut(visibleElements.eyebrow, visibleElements.h3), 0);
+        }
+
+        // Slide in the new target elements after the slide out is complete
+        currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
+      } else {
+        console.error(`No matching target found with data-threads-id="${id}"`);
+        isAnimating = false; // Reset animation state if no matching target found
+      }
+
+      if (targetTouchpoint) {
+        // Fade out all touchpoints
+        touchpoints.forEach(touchpoint => {
+          if (touchpoint !== targetTouchpoint) {
+            fadeOut(touchpoint);
+          }
+        });
+
+        // Fade in the target touchpoint
+        currentTimeline.add(() => fadeIn(targetTouchpoint), '+=0.1'); // Add slight delay to ensure fadeOut completes
+      } else {
+        console.error(`No matching touchpoint found with data-threads-id="${id}"`);
+      }
+    });
+  });
 
   // Script for h-h6.is-info and paragraph.is-info
   const garmentItems = document.querySelectorAll('.garment_item');
