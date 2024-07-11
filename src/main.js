@@ -179,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const touchpointSelector = touchpointMap[id];
         const targetTouchpoint = document.querySelector(touchpointSelector);
         if (targetTouchpoint) {
+          console.log(`Showing touchpoint: ${touchpointSelector}`); // Debugging output
           gsap.set(targetTouchpoint, { opacity: 1, visibility: 'visible' });
         } else {
           console.error(`No matching touchpoint found for data-threads-id="${id}"`);
