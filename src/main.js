@@ -190,17 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Function to fade in a target element
+  // Function to enhance fade in a target element
   const fadeIn = (target) => {
     return gsap.fromTo(target, 
-      { opacity: 0, visibility: 'visible' }, 
-      { opacity: 1, duration: 0.5, ease: 'power2.out' });
+      { opacity: 0, scale: 0.8, rotation: -10, visibility: 'visible' }, 
+      { opacity: 1, scale: 1, rotation: 0, duration: 0.5, ease: 'power2.out' });
   };
 
-  // Function to fade out a target element
+  // Function to enhance fade out a target element
   const fadeOut = (target) => {
     return gsap.to(target, 
-      { opacity: 0, duration: 0.5, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, scale: 0.8, rotation: 10, duration: 0.5, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
