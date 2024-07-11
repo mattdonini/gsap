@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
       isAnimating = true;
 
       const id = trigger.getAttribute('data-threads-id');
+      console.log(`Trigger clicked with data-threads-id: ${id}`); // Debugging output
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
@@ -194,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Show the corresponding touchpoint
         const touchpointSelector = touchpointMap[id];
+        console.log(`Touchpoint selector: ${touchpointSelector}`); // Debugging output
         const targetTouchpoint = document.querySelector(touchpointSelector);
         if (targetTouchpoint) {
           console.log(`Showing touchpoint: ${touchpointSelector}`); // Debugging output
