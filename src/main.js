@@ -126,6 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const touchpointMap = {
+    'holographic': '.touchpoint_wrap.is-holographic',
+    'prism': '.touchpoint_wrap.is-prism',
+    'metallic': '.touchpoint_wrap.is-metallic'
+  };
+
+  const touchpoints = document.querySelectorAll('.touchpoint_wrap');
+
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
@@ -161,6 +169,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
+
+        // Hide all touchpoints
+        touchpoints.forEach(touchpoint => {
+          gsap.set(touchpoint, { opacity: 0, visibility: 'hidden' });
+        });
+
+        // Show the corresponding touchpoint
+        const touchpointSelector = touchpointMap[id];
+        const targetTouchpoint = document.querySelector(touchpointSelector);
+        if (targetTouchpoint) {
+          gsap.set(targetTouchpoint, { opacity: 1, visibility: 'visible' });
+        } else {
+          console.error(`No matching touchpoint found for data-threads-id="${id}"`);
+        }
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
@@ -241,52 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
         );
-      }
-    });
-  });
-
-  const touchpoints = {
-    holographic: document.querySelector('.touchpoint_wrap.is-holographic'),
-    prism: document.querySelector('.touchpoint_wrap.is-prism'),
-    metallic: document.querySelector('.touchpoint_wrap.is-metallic')
-  };
-
-  const showTouchpoint = (type) => {
-    Object.keys(touchpoints).forEach(key => {
-      if (key === type) {
-        gsap.fromTo(touchpoints[key], 
-          { opacity: 0, display: 'none' }, 
-          { opacity: 1, display: 'block', duration: 0.5, ease: 'power2.out' }
-        );
-      } else {
-        gsap.set(touchpoints[key], { opacity: 0, display: 'none' });
-      }
-    });
-  };
-
-  triggers.forEach(trigger => {
-    trigger.addEventListener('click', () => {
-      const id = trigger.getAttribute('data-threads-id');
-      const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
-      const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
-
-      if (targetEyebrow && targetH3) {
-        // Determine which touchpoint to show based on the clicked thread item
-        let touchpointType;
-        if (id === 'holographic') {
-          touchpointType = 'holographic';
-        } else if (id === 'prism') {
-          touchpointType = 'prism';
-        } else if (id === 'metallic') {
-          touchpointType = 'metallic';
-        }
-
-        if (touchpointType) {
-          showTouchpoint(touchpointType);
-        }
-      } else {
-        console.error(`No matching target found with data-threads-id="${id}"`);
-        isAnimating = false; // Reset animation state if no matching target found
       }
     });
   });
