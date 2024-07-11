@@ -126,6 +126,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const touchpoints = {
+    holographic: document.querySelector('.touchpoint_wrap.is-holographic'),
+    prism: document.querySelector('.touchpoint_wrap.is-prism'),
+    metallic: document.querySelector('.touchpoint_wrap.is-metallic')
+  };
+
+  const showTouchpoint = (type) => {
+    Object.keys(touchpoints).forEach(key => {
+      if (key === type) {
+        gsap.fromTo(touchpoints[key], 
+          { opacity: 0, display: 'block' }, 
+          { opacity: 1, duration: 0.5, ease: 'power2.out' }
+        );
+      } else {
+        gsap.set(touchpoints[key], { display: 'none' });
+      }
+    });
+  };
+
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
@@ -161,6 +180,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
+
+        // Determine which touchpoint to show based on the clicked thread item
+        let touchpointType;
+        if (id === 'holographic') {
+          touchpointType = 'holographic';
+        } else if (id === 'prism') {
+          touchpointType = 'prism';
+        } else if (id === 'metallic') {
+          touchpointType = 'metallic';
+        }
+
+        if (touchpointType) {
+          showTouchpoint(touchpointType);
+        }
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
