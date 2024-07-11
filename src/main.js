@@ -126,22 +126,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const touchpoints = {
-    holographic: document.querySelector('.touchpoint_wrap.is-holographic'),
-    prism: document.querySelector('.touchpoint_wrap.is-prism'),
-    metallic: document.querySelector('.touchpoint_wrap.is-metallic')
-  };
+  const touchpoints = document.querySelectorAll('.touchpoint_wrap');
 
   // Initially hide all touchpoints
-  Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
+  touchpoints.forEach(tp => tp.style.display = 'none');
 
   const showTouchpoint = (id) => {
     // Hide all touchpoints
-    Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
+    touchpoints.forEach(tp => tp.style.display = 'none');
 
     // Show the selected touchpoint
-    if (touchpoints[id]) {
-      touchpoints[id].style.display = 'block';
+    const targetTouchpoint = document.querySelector(`.touchpoint_wrap.is-${id}`);
+    if (targetTouchpoint) {
+      targetTouchpoint.style.display = 'block';
     } else {
       console.error(`No matching touchpoint found with id="${id}"`);
     }
@@ -182,9 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
-
-        // Hide all touchpoints
-        Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
 
         // Show the corresponding touchpoint
         showTouchpoint(id);
