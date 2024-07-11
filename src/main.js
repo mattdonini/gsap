@@ -126,30 +126,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const touchpointMap = {
-    'holographic': '.touchpoint_wrap.is-holographic',
-    'prism': '.touchpoint_wrap.is-prism',
-    'metallic': '.touchpoint_wrap.is-metallic'
+  const touchpoints = {
+    holographic: document.querySelector('.touchpoint_wrap.is-holographic'),
+    prism: document.querySelector('.touchpoint_wrap.is-prism'),
+    metallic: document.querySelector('.touchpoint_wrap.is-metallic')
   };
 
-  const touchpoints = document.querySelectorAll('.touchpoint_wrap');
+  const showTouchpoint = (id) => {
+    // Hide all touchpoints
+    Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
 
-  // Hide all touchpoints initially
-  touchpoints.forEach(touchpoint => {
-    gsap.set(touchpoint, { opacity: 0, visibility: 'hidden' });
-  });
-
-  // Show the first touchpoint by default
-  if (triggers.length > 0) {
-    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    const defaultTouchpointSelector = touchpointMap[firstTriggerId];
-    const defaultTouchpoint = document.querySelector(defaultTouchpointSelector);
-    if (defaultTouchpoint) {
-      gsap.set(defaultTouchpoint, { opacity: 1, visibility: 'visible' });
+    // Show the selected touchpoint
+    if (touchpoints[id]) {
+      touchpoints[id].style.display = 'block';
     } else {
-      console.error(`No matching touchpoint found for data-threads-id="${firstTriggerId}"`);
+      console.error(`No matching touchpoint found with id="${id}"`);
     }
-  }
+  };
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
@@ -167,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
       isAnimating = true;
 
       const id = trigger.getAttribute('data-threads-id');
-      console.log(`Trigger clicked with data-threads-id: ${id}`); // Debugging output
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
 
@@ -189,20 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
 
         // Hide all touchpoints
-        touchpoints.forEach(touchpoint => {
-          gsap.set(touchpoint, { opacity: 0, visibility: 'hidden' });
-        });
+        Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
 
         // Show the corresponding touchpoint
-        const touchpointSelector = touchpointMap[id];
-        console.log(`Touchpoint selector: ${touchpointSelector}`); // Debugging output
-        const targetTouchpoint = document.querySelector(touchpointSelector);
-        if (targetTouchpoint) {
-          console.log(`Showing touchpoint: ${touchpointSelector}`); // Debugging output
-          gsap.set(targetTouchpoint, { opacity: 1, visibility: 'visible' });
-        } else {
-          console.error(`No matching touchpoint found for data-threads-id="${id}"`);
-        }
+        showTouchpoint(id);
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
