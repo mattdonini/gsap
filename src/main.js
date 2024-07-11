@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targetTouchpoint) {
         // Fade out all touchpoints
         touchpoints.forEach(touchpoint => {
-          if (touchpoint.style.visibility === 'visible') {
+          if (touchpoint !== targetTouchpoint) {
             fadeOut(touchpoint);
           }
         });
