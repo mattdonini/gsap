@@ -126,6 +126,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Function to fade in a target element
+  const fadeIn = (target) => {
+    return gsap.fromTo(target, 
+      { opacity: 0, visibility: 'visible' }, 
+      { opacity: 1, duration: 0.5, ease: 'power2.out' });
+  };
+
+  // Function to fade out a target element
+  const fadeOut = (target) => {
+    return gsap.to(target, 
+      { opacity: 0, duration: 0.5, ease: 'power2.in', onComplete: () => {
+        target.style.visibility = 'hidden';
+      }});
+  };
+
+  // Select all touchpoint_wrap elements
+  const touchpoints = document.querySelectorAll('.touchpoint_wrap.is-holographic, .touchpoint_wrap.is-prism, .touchpoint_wrap.is-metallic');
+
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
@@ -144,8 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
+      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${id}"]`);
 
-      if (targetEyebrow && targetH3) {
+      if (targetEyebrow && targetH3 && targetTouchpoint) {
         // Create a timeline to sequence the slide out and slide in animations
         currentTimeline = gsap.timeline({
           onComplete: () => {
@@ -161,6 +180,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
+
+        // Fade out all touchpoints
+        touchpoints.forEach(touchpoint => {
+          if (touchpoint.style.visibility === 'visible') {
+            fadeOut(touchpoint);
+          }
+        });
+
+        // Fade in the target touchpoint
+        fadeIn(targetTouchpoint);
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
