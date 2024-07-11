@@ -85,9 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set(h3, { opacity: 0, y: '-100%', visibility: 'hidden' });
   });
 
+  // Hide all touchpoint_wrap elements initially
+  const touchpointWraps = document.querySelectorAll('.touchpoint_wrap');
+  touchpointWraps.forEach(item => {
+    gsap.set(item, { opacity: 0, visibility: 'hidden' });
+  });
+
   let isAnimating = false; // To track animation state
   let currentTimeline = null; // To track the current timeline
   let visibleElements = { eyebrow: null, h3: null }; // To track the currently visible elements
+  let visibleTouchpoint = null; // To track the currently visible touchpoint wrap
 
   const slideIn = (eyebrow, h3) => {
     return gsap.timeline()
@@ -111,38 +118,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }}, 0);
   };
 
+  const fadeIn = (element) => {
+    return gsap.fromTo(element,
+      { opacity: 0, visibility: 'visible' },
+      { opacity: 1, duration: 0.5, ease: 'power2.out' });
+  };
+
+  const fadeOut = (element) => {
+    return gsap.to(element,
+      { opacity: 0, duration: 0.5, ease: 'power2.in', onComplete: () => {
+        element.style.visibility = 'hidden';
+      }});
+  };
+
   // Select the first trigger's corresponding content by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
     const defaultEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .is-eyebrow`);
     const defaultH3 = document.querySelector(`.threads_title-item[data-threads-id="${firstTriggerId}"] .h-h3`);
-    console.log("Default Target:", defaultEyebrow, defaultH3);  // Debug output
+    const defaultTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="threads_img_${firstTriggerId}"]`);
+
     if (defaultEyebrow && defaultH3) {
       gsap.set(defaultEyebrow, { opacity: 1, y: '0%', visibility: 'visible' });
       gsap.set(defaultH3, { opacity: 1, y: '0%', visibility: 'visible' });
       visibleElements = { eyebrow: defaultEyebrow, h3: defaultH3 };
-    } else {
-      console.error(`No matching target found with data-threads-id="${firstTriggerId}"`);
+    }
+
+    if (defaultTouchpoint) {
+      gsap.set(defaultTouchpoint, { opacity: 1, visibility: 'visible' });
+      visibleTouchpoint = defaultTouchpoint;
     }
   }
-
-  const touchpoints = document.querySelectorAll('.touchpoint_wrap');
-
-  // Initially hide all touchpoints
-  touchpoints.forEach(tp => tp.style.display = 'none');
-
-  const showTouchpoint = (id) => {
-    // Hide all touchpoints
-    touchpoints.forEach(tp => tp.style.display = 'none');
-
-    // Show the selected touchpoint
-    const targetTouchpoint = document.querySelector(`.touchpoint_wrap.is-${id}`);
-    if (targetTouchpoint) {
-      targetTouchpoint.style.display = 'block';
-    } else {
-      console.error(`No matching touchpoint found with id="${id}"`);
-    }
-  };
 
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
@@ -155,6 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
           gsap.set(visibleElements.eyebrow, { opacity: 0, y: '100%', visibility: 'hidden' });
           gsap.set(visibleElements.h3, { opacity: 0, y: '100%', visibility: 'hidden' });
         }
+        if (visibleTouchpoint) {
+          gsap.set(visibleTouchpoint, { opacity: 0, visibility: 'hidden' });
+        }
       }
 
       isAnimating = true;
@@ -162,13 +171,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
+      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="threads_img_${id}"]`);
 
-      if (targetEyebrow && targetH3) {
+      if (targetEyebrow && targetH3 && targetTouchpoint) {
         // Create a timeline to sequence the slide out and slide in animations
         currentTimeline = gsap.timeline({
           onComplete: () => {
             isAnimating = false; // Reset animation state after completion
             visibleElements = { eyebrow: targetEyebrow, h3: targetH3 };
+            visibleTouchpoint = targetTouchpoint;
           }
         });
 
@@ -177,23 +188,22 @@ document.addEventListener('DOMContentLoaded', () => {
           currentTimeline.add(slideOut(visibleElements.eyebrow, visibleElements.h3), 0);
         }
 
+        // Fade out currently visible touchpoint
+        if (visibleTouchpoint) {
+          currentTimeline.add(fadeOut(visibleTouchpoint), 0);
+        }
+
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
 
-        // Show the corresponding touchpoint
-        showTouchpoint(id);
+        // Fade in the new target touchpoint after slide in is complete
+        currentTimeline.add(() => fadeIn(targetTouchpoint), '+=0.1'); // Add slight delay to ensure slideIn completes
       } else {
         console.error(`No matching target found with data-threads-id="${id}"`);
         isAnimating = false; // Reset animation state if no matching target found
       }
     });
   });
-
-  // Select the first trigger's corresponding touchpoint by default
-  if (triggers.length > 0) {
-    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    showTouchpoint(firstTriggerId);
-  }
 
   // Script for h-h6.is-info and paragraph.is-info
   const garmentItems = document.querySelectorAll('.garment_item');
