@@ -255,11 +255,11 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.keys(touchpoints).forEach(key => {
       if (key === type) {
         gsap.fromTo(touchpoints[key], 
-          { opacity: 0 }, 
-          { opacity: 1, duration: 0.5, ease: 'power2.out' }
+          { opacity: 0, display: 'none' }, 
+          { opacity: 1, display: 'block', duration: 0.5, ease: 'power2.out' }
         );
       } else {
-        gsap.set(touchpoints[key], { opacity: 0 });
+        gsap.set(touchpoints[key], { opacity: 0, display: 'none' });
       }
     });
   };
