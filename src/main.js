@@ -183,17 +183,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Function to fade in a target element with 2D rotation and scaling
+  // Function to fade in a target element
   const fadeIn = (target) => {
     return gsap.fromTo(target, 
-      { opacity: 0, visibility: 'visible', rotation: -180, scale: 0.8 }, 
-      { opacity: 1, rotation: 0, scale: 1, duration: 0.5, ease: 'power2.out' });
+      { opacity: 0, visibility: 'visible' }, 
+      { opacity: 1, duration: 0.5, ease: 'power2.out' });
   };
 
-  // Function to fade out a target element with 2D rotation and scaling
+  // Function to fade out a target element
   const fadeOut = (target) => {
     return gsap.to(target, 
-      { opacity: 0, rotation: 180, scale: 0.8, duration: 0.5, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, duration: 0.5, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
