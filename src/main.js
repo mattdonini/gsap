@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
       const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${id}"]`);
 
-      if (targetEyebrow && targetH3 && targetTouchpoint) {
+      if (targetEyebrow && targetH3) {
         // Create a timeline to sequence the slide out and slide in animations
         currentTimeline = gsap.timeline({
           onComplete: () => {
@@ -180,7 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
+      } else {
+        console.error(`No matching target found with data-threads-id="${id}"`);
+        isAnimating = false; // Reset animation state if no matching target found
+      }
 
+      if (targetTouchpoint) {
         // Fade out all touchpoints
         touchpoints.forEach(touchpoint => {
           if (touchpoint.style.visibility === 'visible') {
@@ -191,8 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fade in the target touchpoint
         fadeIn(targetTouchpoint);
       } else {
-        console.error(`No matching target found with data-threads-id="${id}"`);
-        isAnimating = false; // Reset animation state if no matching target found
+        console.error(`No matching touchpoint found with data-threads-id="${id}"`);
       }
     });
   });
