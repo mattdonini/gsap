@@ -126,6 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const touchpointMapping = {
+    'threads_img_1': 'holographic',
+    'threads_img_2': 'prism',
+    'threads_img_3': 'metallic'
+  };
+
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
@@ -144,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = trigger.getAttribute('data-threads-id');
       const targetEyebrow = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .is-eyebrow`);
       const targetH3 = document.querySelector(`.threads_title-item[data-threads-id="${id}"] .h-h3`);
-      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${id}"]`);
+      const touchpointId = touchpointMapping[id];
+      const targetTouchpoint = document.querySelector(`.touchpoint_wrap[data-touchpoint-id="${touchpointId}"]`);
 
       if (targetEyebrow && targetH3) {
         // Create a timeline to sequence the slide out and slide in animations
@@ -178,22 +185,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fade in the target touchpoint
         currentTimeline.add(() => fadeIn(targetTouchpoint), '+=0.1'); // Add slight delay to ensure fadeOut completes
       } else {
-        console.error(`No matching touchpoint found with data-threads-id="${id}"`);
+        console.error(`No matching touchpoint found with data-touchpoint-id="${touchpointId}"`);
       }
     });
   });
 
-  // Function to fade in a target element with 2D rotation and scaling
+  // Function to fade in a target element
   const fadeIn = (target) => {
     return gsap.fromTo(target, 
-      { opacity: 0, visibility: 'visible', rotation: -180, scale: 0.8 }, 
-      { opacity: 1, rotation: 0, scale: 1, duration: 0.5, ease: 'power2.out' });
+      { opacity: 0, visibility: 'visible' }, 
+      { opacity: 1, duration: 0.5, ease: 'power2.out' });
   };
 
-  // Function to fade out a target element with 2D rotation and scaling
+  // Function to fade out a target element
   const fadeOut = (target) => {
     return gsap.to(target, 
-      { opacity: 0, rotation: 180, scale: 0.8, duration: 0.5, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, duration: 0.5, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
@@ -209,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Show the first touchpoint by default
   if (triggers.length > 0) {
     const firstTriggerId = triggers[0].getAttribute('data-threads-id');
-    const defaultTouchpoint = document.querySelector(`.touchpoint_wrap[data-threads-id="${firstTriggerId}"]`);
+    const defaultTouchpoint = document.querySelector(`.touchpoint_wrap[data-touchpoint-id="${touchpointMapping[firstTriggerId]}"]`);
     if (defaultTouchpoint) {
       gsap.set(defaultTouchpoint, { opacity: 1, visibility: 'visible' });
     }
