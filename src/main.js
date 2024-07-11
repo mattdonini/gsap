@@ -183,6 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Slide in the new target elements after the slide out is complete
         currentTimeline.add(() => slideIn(targetEyebrow, targetH3), '+=0.1'); // Add slight delay to ensure slideOut completes
 
+        // Hide all touchpoints
+        Object.values(touchpoints).forEach(tp => tp.style.display = 'none');
+
         // Show the corresponding touchpoint
         showTouchpoint(id);
       } else {
@@ -191,6 +194,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Select the first trigger's corresponding touchpoint by default
+  if (triggers.length > 0) {
+    const firstTriggerId = triggers[0].getAttribute('data-threads-id');
+    showTouchpoint(firstTriggerId);
+  }
 
   // Script for h-h6.is-info and paragraph.is-info
   const garmentItems = document.querySelectorAll('.garment_item');
