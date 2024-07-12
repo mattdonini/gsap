@@ -257,8 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
       defaultHeading.dataset.text = defaultHeading.innerText;
       defaultParagraph.style.visibility = 'visible';
       defaultParagraph.dataset.text = defaultParagraph.innerText;
-      scrambleIn(defaultHeading, 24); // Set duration for garments here
-      scrambleIn(defaultParagraph, 24); // Set duration for garments here
+      scrambleIn(defaultHeading, 20); // Set duration for garments here
+      scrambleIn(defaultParagraph, 20); // Set duration for garments here
     }
   }
 
@@ -289,8 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetHeading.dataset.text = targetHeading.innerText;
         targetParagraph.style.visibility = 'visible';
         targetParagraph.dataset.text = targetParagraph.innerText;
-        scrambleIn(targetHeading, 24); // Set duration for garments here
-        scrambleIn(targetParagraph, 24); // Set duration for garments here
+        scrambleIn(targetHeading, 20); // Set duration for garments here
+        scrambleIn(targetParagraph, 20); // Set duration for garments here
       } else {
         console.error(
           `No matching heading or paragraph found with data-garment-id="${garmentId}"`
