@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const easeOutExpo = (t) => {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
   };
- // TextScramble class with easing and duration
+// TextScramble class with easing and duration
 class TextScramble {
   constructor(el, duration = 18) { // 0.3 seconds at 60fps
     this.el = el;
