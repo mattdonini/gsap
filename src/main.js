@@ -132,6 +132,23 @@ document.addEventListener('DOMContentLoaded', () => {
     'threads_img_3': 'metallic'
   };
 
+  // Function to smoothly fade in a target element with rotation and scaling
+  const fadeIn = (target) => {
+    return gsap.fromTo(target, 
+      { scale: 0.5, rotation: -180, visibility: 'visible' }, 
+      { scale: 1, rotation: 0, duration: 0.5, ease: 'power2.out', onStart: () => {
+        target.style.visibility = 'visible';
+      }});
+  };
+
+  // Function to smoothly fade out a target element with rotation and scaling
+  const fadeOut = (target) => {
+    return gsap.to(target, 
+      { scale: 0.5, rotation: 180, duration: 0.5, ease: 'power2.in', onComplete: () => {
+        target.style.visibility = 'hidden';
+      }});
+  };
+
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
@@ -189,21 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
-  // Function to smoothly fade in a target element with rotation and scaling
-  const fadeIn = (target) => {
-    return gsap.fromTo(target, 
-      { opacity: 0, scale: 0.5, rotation: -180, visibility: 'visible' }, 
-      { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: 'power2.out' });
-  };
-
-  // Function to smoothly fade out a target element with rotation and scaling
-  const fadeOut = (target) => {
-    return gsap.to(target, 
-      { opacity: 0, scale: 0.5, rotation: 180, duration: 0.7, ease: 'power2.in', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
-  };
 
   // Select all touchpoint_wrap elements
   const touchpoints = document.querySelectorAll('.touchpoint_wrap.is-holographic, .touchpoint_wrap.is-prism, .touchpoint_wrap.is-metallic');
