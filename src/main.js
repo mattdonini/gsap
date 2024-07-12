@@ -132,6 +132,19 @@ document.addEventListener('DOMContentLoaded', () => {
     'threads_img_3': 'metallic'
   };
 
+  const fadeIn = (target) => {
+    return gsap.fromTo(target, 
+      { opacity: 0.5, scale: 0.8, rotation: -180, visibility: 'visible' }, 
+      { opacity: 1, scale: 1, rotation: 0, duration: 1.0, ease: 'power4.inOut' });
+  };
+
+  const fadeOut = (target) => {
+    return gsap.to(target, 
+      { opacity: 0.5, scale: 0.8, rotation: 180, duration: 1.0, ease: 'power4.inOut', onComplete: () => {
+        target.style.visibility = 'hidden';
+      }});
+  };
+
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
@@ -193,14 +206,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to enhance fade in a target element
   const fadeIn = (target) => {
     return gsap.fromTo(target, 
-      { opacity: 0.5, scale: 0.5, rotation: -180, visibility: 'visible' }, 
-      { opacity: 1, scale: 1, rotation: 0, duration: 0.4, ease: 'power2.out' });
+      { opacity: 0, scale: 0.8, rotation: -20, visibility: 'visible' }, 
+      { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: 'power2.out', delay: 0.2 });
   };
 
   // Function to enhance fade out a target element
   const fadeOut = (target) => {
     return gsap.to(target, 
-      { opacity: 0.5, scale: 0.5, rotation: 180, duration: 0.4, ease: 'power2.in', onComplete: () => {
+      { opacity: 0, scale: 0.8, rotation: 20, duration: 0.7, ease: 'power2.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
