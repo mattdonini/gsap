@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
   };
 
- // TextScramble class with easing and duration
+  // TextScramble class with easing and duration
   class TextScramble {
     constructor(el, duration = 60) {
       this.el = el;
@@ -72,21 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return this.chars[Math.floor(Math.random() * this.chars.length)];
     }
   }
-
-// Select all elements with the specified classes
-const scrambleElements = document.querySelectorAll('.paragraph.is-support-medium.is-selector.is-scramble, .paragraph.is-support-medium.is-scramble');
-
-// Function to trigger the scramble effect
-function triggerScramble(event) {
-  const el = event.target;
-  const textScramble = new TextScramble(el);
-  textScramble.setText(el.innerText);
-}
-
-// Add event listeners to each element
-scrambleElements.forEach(el => {
-  el.addEventListener('mouseenter', triggerScramble);
-});
 
   // Script for threads_title-item and threads_trigger-item
   const titles = document.querySelectorAll('.threads_title-item');
