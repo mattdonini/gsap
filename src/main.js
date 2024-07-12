@@ -190,14 +190,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Function to enhance fade in a target element
+  // Function to enhance fade in a target element with bounce effect
   const fadeIn = (target) => {
     return gsap.fromTo(target, 
       { opacity: 0, scale: 0.8, rotation: -20, visibility: 'visible' }, 
-      { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: 'power2.out', delay: 0.2 });
+      { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: 'bounce.out', delay: 0.2 });
   };
 
-  // Function to enhance fade out a target element
+  // Function to enhance fade out a target element with rotation
   const fadeOut = (target) => {
     return gsap.to(target, 
       { opacity: 0, scale: 0.8, rotation: 20, duration: 0.7, ease: 'power2.in', onComplete: () => {
