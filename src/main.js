@@ -73,6 +73,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+class HoverTextScramble extends TextScramble {
+  constructor(el, duration = 60) {
+    super(el, duration);
+    this.el.addEventListener('mouseenter', () => this.handleMouseEnter());
+  }
+
+  handleMouseEnter() {
+    const originalText = this.el.innerText;
+    this.setText(originalText).then(() => {
+      setTimeout(() => {
+        this.el.innerText = originalText;
+      }, 2000); // 2 seconds
+    });
+  }
+}
+
+// Initialize the hover effect for the specified elements
+document.querySelectorAll('.paragraph.is-support-medium.is-selector.is-scramble, .paragraph.is-support-medium.is-scramble').forEach(el => {
+  new HoverTextScramble(el);
+});
+
   // Script for threads_title-item and threads_trigger-item
   const titles = document.querySelectorAll('.threads_title-item');
   const triggers = document.querySelectorAll('.threads_trigger-item');
