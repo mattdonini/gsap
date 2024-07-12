@@ -132,19 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     'threads_img_3': 'metallic'
   };
 
-  const fadeIn = (target) => {
-    return gsap.fromTo(target, 
-      { opacity: 0.5, scale: 0.8, rotation: -180, visibility: 'visible' }, 
-      { opacity: 1, scale: 1, rotation: 0, duration: 1.0, ease: 'power4.inOut' });
-  };
-
-  const fadeOut = (target) => {
-    return gsap.to(target, 
-      { opacity: 0.5, scale: 0.8, rotation: 180, duration: 1.0, ease: 'power4.inOut', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
-  };
-
   triggers.forEach(trigger => {
     trigger.addEventListener('click', () => {
       if (isAnimating) {
@@ -153,8 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (visibleElements.eyebrow && visibleElements.h3) {
           // Immediately hide the currently visible elements
-          gsap.set(visibleElements.eyebrow, { opacity: 0.5, y: '100%', visibility: 'hidden' });
-          gsap.set(visibleElements.h3, { opacity: 0.5, y: '100%', visibility: 'hidden' });
+          gsap.set(visibleElements.eyebrow, { opacity: 0, y: '100%', visibility: 'hidden' });
+          gsap.set(visibleElements.h3, { opacity: 0, y: '100%', visibility: 'hidden' });
         }
       }
 
@@ -188,9 +175,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (targetTouchpoint) {
-        // Hide all touchpoints immediately
+        // Fade out all touchpoints
         touchpoints.forEach(touchpoint => {
-          gsap.set(touchpoint, { opacity: 0.5, scale: 0.8, rotation: 180, visibility: 'hidden' });
+          if (touchpoint !== targetTouchpoint) {
+            fadeOut(touchpoint);
+          }
         });
 
         // Fade in the target touchpoint
@@ -200,6 +189,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Function to enhance fade in a target element
+  const fadeIn = (target) => {
+    return gsap.fromTo(target, 
+      { opacity: 0.5, scale: 0.5, rotation: -180, visibility: 'visible' }, 
+      { opacity: 1, scale: 1, rotation: 0, duration: 0.4, ease: 'power2.out' });
+  };
+
+  // Function to enhance fade out a target element
+  const fadeOut = (target) => {
+    return gsap.to(target, 
+      { opacity: 0.5, scale: 0.5, rotation: 180, duration: 0.4, ease: 'power2.in', onComplete: () => {
+        target.style.visibility = 'hidden';
+      }});
+  };
 
   // Select all touchpoint_wrap elements
   const touchpoints = document.querySelectorAll('.touchpoint_wrap.is-holographic, .touchpoint_wrap.is-prism, .touchpoint_wrap.is-metallic');
