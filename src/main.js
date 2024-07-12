@@ -73,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+// ... existing code ...
+
 class HoverTextScramble extends TextScramble {
   constructor(el, duration = 60) {
     super(el, duration);
@@ -80,11 +82,15 @@ class HoverTextScramble extends TextScramble {
   }
 
   handleMouseEnter() {
+    if (this.isScrambling) return; // Prevent multiple scrambles on continuous hover
+
+    this.isScrambling = true;
     const originalText = this.el.innerText;
     this.setText(originalText).then(() => {
       setTimeout(() => {
         this.el.innerText = originalText;
-      }, 2000); // 2 seconds
+        this.isScrambling = false; // Allow scrambling again after mouse leaves and re-enters
+      }, 1000); // 1 second
     });
   }
 }
