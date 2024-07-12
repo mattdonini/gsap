@@ -7,71 +7,86 @@ document.addEventListener('DOMContentLoaded', () => {
     return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
   };
 
-  // TextScramble class with easing and duration
-  class TextScramble {
-    constructor(el, duration = 60) {
-      this.el = el;
-      this.chars = '!<>-\\/[]{}—=+*^?#_____';
-      this.update = this.update.bind(this);
-      this.duration = duration; // Duration in frames
+ // TextScramble class with easing and duration
+ class TextScramble {
+  constructor(el, duration = 60) {
+    this.el = el;
+    this.chars = '!<>-\\/[]{}—=+*^?#_____';
+    this.update = this.update.bind(this);
+    this.duration = duration; // Duration in frames
+  }
+
+  setText(newText) {
+    const oldText = this.el.innerText;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise((resolve) => (this.resolve = resolve));
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 10);
+      const end = start + this.duration;
+      this.queue.push({ from, to, start, end });
     }
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
 
-    setText(newText) {
-      const oldText = this.el.innerText;
-      const length = Math.max(oldText.length, newText.length);
-      const promise = new Promise((resolve) => (this.resolve = resolve));
-      this.queue = [];
-      for (let i = 0; i < length; i++) {
-        const from = oldText[i] || '';
-        const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 10);
-        const end = start + this.duration;
-        this.queue.push({ from, to, start, end });
-      }
-      cancelAnimationFrame(this.frameRequest);
-      this.frame = 0;
-      this.update();
-      return promise;
-    }
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      const progress = Math.min(Math.max((this.frame - start) / (end - start), 0), 1);
+      const easedProgress = easeOutExpo(progress);
 
-    update() {
-      let output = '';
-      let complete = 0;
-      for (let i = 0, n = this.queue.length; i < n; i++) {
-        let { from, to, start, end, char } = this.queue[i];
-        const progress = Math.min(Math.max((this.frame - start) / (end - start), 0), 1);
-        const easedProgress = easeOutExpo(progress);
-
-        if (this.frame >= end) {
-          complete++;
-          output += to;
-        } else if (this.frame >= start) {
-          if (!char || Math.random() < 0.28) {
-            char = this.randomChar();
-            this.queue[i].char = char;
-          }
-          if (easedProgress < 1) {
-            output += `<span>${char}</span>`;
-          } else {
-            output += to;
-          }
-        } else {
-          output += from;
+      if (this.frame >= end) {
+        complete++;
+        output += to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.28) {
+          char = this.randomChar();
+          this.queue[i].char = char;
         }
-      }
-      this.el.innerHTML = output;
-      if (complete === this.queue.length) {
-        this.resolve();
+        if (easedProgress < 1) {
+          output += `<span>${char}</span>`;
+        } else {
+          output += to;
+        }
       } else {
-        this.frameRequest = requestAnimationFrame(this.update);
-        this.frame++;
+        output += from;
       }
     }
-
-    randomChar() {
-      return this.chars[Math.floor(Math.random() * this.chars.length)];
+    this.el.innerHTML = output;
+    if (complete === this.queue.length) {
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
     }
   }
+
+  randomChar() {
+    return this.chars[Math.floor(Math.random() * this.chars.length)];
+  }
+}
+
+// Select all elements with the specified classes
+const scrambleElements = document.querySelectorAll('.paragraph.is-support-medium.is-selector.is-scramble, .paragraph.is-support-medium.is-scramble');
+
+// Function to trigger the scramble effect
+function triggerScramble(event) {
+const el = event.target;
+const textScramble = new TextScramble(el);
+textScramble.setText(el.innerText);
+}
+
+// Add event listeners to each element
+scrambleElements.forEach(el => {
+el.addEventListener('mouseenter', triggerScramble);
+});
 
   // Script for threads_title-item and threads_trigger-item
   const titles = document.querySelectorAll('.threads_title-item');
