@@ -153,8 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (visibleElements.eyebrow && visibleElements.h3) {
           // Immediately hide the currently visible elements
-          gsap.set(visibleElements.eyebrow, { opacity: 0, y: '100%', visibility: 'hidden' });
-          gsap.set(visibleElements.h3, { opacity: 0, y: '100%', visibility: 'hidden' });
+          gsap.set(visibleElements.eyebrow, { opacity: 0.5, y: '100%', visibility: 'hidden' });
+          gsap.set(visibleElements.h3, { opacity: 0.5, y: '100%', visibility: 'hidden' });
         }
       }
 
@@ -188,11 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (targetTouchpoint) {
-        // Fade out all touchpoints
+        // Hide all touchpoints immediately
         touchpoints.forEach(touchpoint => {
-          if (touchpoint !== targetTouchpoint) {
-            fadeOut(touchpoint);
-          }
+          gsap.set(touchpoint, { opacity: 0.5, scale: 0.8, rotation: 180, visibility: 'hidden' });
         });
 
         // Fade in the target touchpoint
@@ -202,21 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-
-  // Function to enhance fade in a target element
-  const fadeIn = (target) => {
-    return gsap.fromTo(target, 
-      { opacity: 0, scale: 0.8, rotation: -20, visibility: 'visible' }, 
-      { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: 'power2.out', delay: 0.2 });
-  };
-
-  // Function to enhance fade out a target element
-  const fadeOut = (target) => {
-    return gsap.to(target, 
-      { opacity: 0, scale: 0.8, rotation: 20, duration: 0.7, ease: 'power2.in', onComplete: () => {
-        target.style.visibility = 'hidden';
-      }});
-  };
 
   // Select all touchpoint_wrap elements
   const touchpoints = document.querySelectorAll('.touchpoint_wrap.is-holographic, .touchpoint_wrap.is-prism, .touchpoint_wrap.is-metallic');
