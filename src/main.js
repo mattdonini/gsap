@@ -220,13 +220,13 @@ new HoverTextScramble(el);
   const fadeIn = (target) => {
     return gsap.fromTo(target, 
       { opacity: 0.5, scale: 0.5, visibility: 'visible' }, 
-      { opacity: 1, scale: 1, duration: 0.3, ease: 'power3.out' });
+      { opacity: 1, scale: 1, duration: 0.3, ease: 'expo.out' });
   };
 
   // Function to enhance fade out a target element
   const fadeOut = (target) => {
     return gsap.to(target, 
-      { opacity: 0.5, scale: 0.5, duration: 0.3, ease: 'power3.in', onComplete: () => {
+      { opacity: 0.5, scale: 0.5, duration: 0.3, ease: 'expo.in', onComplete: () => {
         target.style.visibility = 'hidden';
       }});
   };
