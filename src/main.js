@@ -73,27 +73,26 @@ class TextScramble {
 }
 
 class HoverTextScramble extends TextScramble {
-constructor(el, duration = 18) { // 0.3 seconds at 60fps
-  super(el, duration);
-  this.el.addEventListener('mouseenter', () => this.handleMouseEnter());
-}
+  constructor(el, duration = 9) { // 0.15 seconds at 60fps
+    super(el, duration);
+    this.el.addEventListener('mouseenter', () => this.handleMouseEnter());
+  }
 
-handleMouseEnter() {
-  if (this.isScrambling) return; // Prevent multiple scrambles on continuous hover
+  handleMouseEnter() {
+    if (this.isScrambling) return; // Prevent multiple scrambles on continuous hover
 
-  this.isScrambling = true;
-  this.el.style.pointerEvents = 'none'; // Disable pointer events
-  const originalText = this.el.innerText;
-  this.setText(originalText).then(() => {
-    setTimeout(() => {
-      this.el.innerText = originalText;
-      this.el.style.pointerEvents = ''; // Re-enable pointer events
-      this.isScrambling = false; // Allow scrambling again after mouse leaves and re-enters
-    }, 500); // 0.5 seconds
-  });
+    this.isScrambling = true;
+    this.el.style.pointerEvents = 'none'; // Disable pointer events
+    const originalText = this.el.innerText;
+    this.setText(originalText).then(() => {
+      setTimeout(() => {
+        this.el.innerText = originalText;
+        this.el.style.pointerEvents = ''; // Re-enable pointer events
+        this.isScrambling = false; // Allow scrambling again after mouse leaves and re-enters
+      }, 500); // 0.5 seconds
+    });
+  }
 }
-}
-
 // Initialize the hover effect for the specified elements
 document.querySelectorAll('.paragraph.is-support-medium.is-selector.is-scramble, .paragraph.is-support-medium.is-scramble').forEach(el => {
 new HoverTextScramble(el);
